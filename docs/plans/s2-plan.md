@@ -85,14 +85,14 @@ git status --short
 
 **체크리스트**
 - [x] Q1~Q7 사용자 확정을 이 문서 "0.2 확정된 결정" 절로 기록 — 🔵 2026-09-21, 전부 추천안
-- [ ] 후보별 `npm view <pkg> version license` 출력 인용(전이 의존성의 네이티브 바이너리 라이선스 포함). GPL/AGPL/LGPL 이면 탈락
-- [ ] scratchpad 에서 한글 포함 1쪽 PDF → PNG 렌더 스파이크: Windows 11·Node 24 에서 설치(`npm ci` 시 빌드 도구 불필요 여부), 한글 글리프 정상, 긴 변 ≤1800px 배율 계산, 쪽당 소요 시간. 사용 API 는 공식 문서 URL 기록(기억으로 시그니처 쓰지 않음)
-- [ ] 같은 라이브러리로 PNG/JPG 입력 리사이즈가 되는지 확인. 안 되면 "이미지 입력은 원본 그대로 + 크기 경고"로 축소할지 보고
-- [ ] 스파이크용 PDF 는 T5 의 Q2 방식으로 만든 임시 1쪽(브라우저 headless 옵션도 여기서 `--help`/문서로 확인)
-- [ ] 비교표(후보·버전·라이선스·설치 크기·결과) 제시 → **사용자 승인 후** `npm install --save-exact`
-- [ ] 캐시 설치 경로(`npm ci`)에서 네이티브 모듈이 설치되는지 결정 0001 방식으로 1회 확인 🟡
-- [ ] CLAUDE.md §8 "Node 순수 PDF 렌더 라이브러리" 행을 🔵 + 출처로 갱신
-- [ ] `npm ci && npm test` 통과, `git status` 에 `node_modules`·스파이크 산출물 없음
+- [x] 후보별 `npm view <pkg> version license` 출력 인용(전이 의존성의 네이티브 바이너리 라이선스 포함). GPL/AGPL/LGPL 이면 탈락 — 🔵 2026-09-21. 통과: `pdfjs-dist` 6.3.289(Apache-2.0) + `@napi-rs/canvas` 1.0.9(MIT, Skia BSD-3). 탈락: `mupdf`(AGPL), `sharp`(libvips LGPL). 상세는 CLAUDE.md §8
+- [x] scratchpad 에서 한글 포함 1쪽 PDF → PNG 렌더 스파이크: Windows 11·Node 24 에서 설치(`npm ci` 시 빌드 도구 불필요 여부), 한글 글리프 정상, 긴 변 ≤1800px 배율 계산, 쪽당 소요 시간. 사용 API 는 공식 문서 URL 기록(기억으로 시그니처 쓰지 않음) — 🔵 빌드 도구 불필요, 한글·표·SVG 정상, scale=1800/max(w,h) → 1272x1800, 쪽당 약 0.1초. 폰트 미임베드 PDF 는 T4 로 이월(사용자 결정)
+- [x] 같은 라이브러리로 PNG/JPG 입력 리사이즈가 되는지 확인. 안 되면 "이미지 입력은 원본 그대로 + 크기 경고"로 축소할지 보고 — 🔵 `loadImage`→`drawImage`→`toBuffer` 로 가능
+- [x] 스파이크용 PDF 는 T5 의 Q2 방식으로 만든 임시 1쪽(브라우저 headless 옵션도 여기서 `--help`/문서로 확인) — 🔵 `chrome.exe --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=<out> <file URL>`. `--no-pdf-header-footer` 는 공식 문서 미확인·실동작 확인 🟡
+- [x] 비교표(후보·버전·라이선스·설치 크기·결과) 제시 → **사용자 승인 후** `npm install --save-exact` — 🔵 승인 후 설치
+- [x] 캐시 설치 경로(`npm ci`)에서 네이티브 모듈이 설치되는지 결정 0001 방식으로 1회 확인 🟡 — 🟡 scratchpad 에서 `npm ci --ignore-scripts`(결정 0001 사실 2 의 명령) 후 렌더 동작 확인. 실제 마켓플레이스 설치는 미실행
+- [x] CLAUDE.md §8 "Node 순수 PDF 렌더 라이브러리" 행을 🔵 + 출처로 갱신 — 🔵
+- [x] `npm ci && npm test` 통과, `git status` 에 `node_modules`·스파이크 산출물 없음 — 🔵 96/96
 
 **추천 프롬프트**
 ```text
@@ -338,7 +338,7 @@ expected-items.json·expected-frequency.json 과 비교한 결과를 보여줘. 
 
 ## 2. 전체 진행 체크
 
-- [ ] T0 결정·렌더 스파이크·의존성
+- [x] T0 결정·렌더 스파이크·의존성
 - [ ] T1 문항 스키마·md IO
 - [ ] T2 taxonomy 파서·ingest-items
 - [ ] T3 frequency
