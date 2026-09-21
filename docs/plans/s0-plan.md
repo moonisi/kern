@@ -123,11 +123,11 @@ S0-T1b: 플러그인을 git 으로 설치했을 때 scripts/dist 가 없어지�
 ## T2 — `kern/.claude-plugin/plugin.json`
 
 **체크리스트**
-- [ ] 공식 플러그인 문서에서 manifest 필수/선택 필드 확인 (URL 기록) 🔴→🔵
-- [ ] `plugin.json` 작성: `name: kern`, `version: 0.0.1`(🟡 제안), `description`, `license: MIT`
-- [ ] 경로 값은 전부 `/`
-- [ ] `claude plugin validate ./kern --strict` 출력 인용
-- [ ] `claude --plugin-dir ./kern` 로드 오류 0 확인
+- [x] 공식 플러그인 문서에서 manifest 필수/선택 필드 확인 (URL 기록) 🔵 https://code.claude.com/docs/en/plugins-reference
+- [x] `plugin.json` 작성: `name: kern`, `version: 0.0.1`, `description`, `license: MIT` + `author.name`(`--strict` 가 누락 경고를 오류 처리)
+- [x] 경로 값은 전부 `/` (path 필드 없음, 기본 경로 사용)
+- [x] `claude plugin validate ./kern --strict` 출력 인용 (`5b38c3a`)
+- [ ] `claude --plugin-dir ./kern` 로드 오류 0 확인 — 🔵 CLI(`--plugin-dir ./kern plugin details kern`)는 확인, 인터랙티브 세션은 🔴 미실행
 
 **추천 프롬프트**
 ```text
@@ -144,13 +144,13 @@ S0-T2: plugin.json 을 만들어줘. 먼저 공식 문서로 manifest 스키마�
 ## T3 — `kern/` TypeScript 프로젝트(소스 `kern/scripts/`) + 더미 테스트
 
 **체크리스트**
-- [ ] `npm view typescript version license`, `npm view @types/node version license` 출력 인용 → **사용자 승인** 후 설치
-- [ ] `kern/package.json`: `"type": "module"`, `"engines": {"node": ">=22.18"}`, scripts `typecheck`/`test` (`build` 없음, D6)
-- [ ] `kern/tsconfig.json`: strict, ESM, **emit 없음(타입 검사 전용)**. type stripping 제약 문법을 막는 옵션은 공식 문서(TypeScript·Node)로 확인 후 적용, URL 기록 🔴→🔵
-- [ ] `scripts/src/version.ts` — `package.json` 의 version 을 읽는 순수 함수(첫 줄 한국어 역할 주석)
-- [ ] `scripts/test/version.test.ts` — 더미 1건 (`node:test` + `node:assert`)
-- [ ] `kern/package-lock.json` 생성·커밋, `node_modules/` 미추적 확인
-- [ ] `npm test` 출력 인용
+- [x] `npm view typescript version license`, `npm view @types/node version license` 출력 인용 → **사용자 승인** 후 설치 (`typescript@7.0.2`, `@types/node@22.20.4`)
+- [x] `kern/package.json`: `"type": "module"`, `"engines": {"node": ">=22.18"}`, scripts `typecheck`/`test` (`build` 없음, D6)
+- [x] `kern/tsconfig.json`: strict, ESM, **emit 없음(타입 검사 전용)**. type stripping 제약 문법을 막는 옵션은 공식 문서(TypeScript·Node)로 확인 후 적용, URL 기록 🔵 https://nodejs.org/api/typescript.html (+ `types: ["node"]`, tsc 7 TS2591 대응)
+- [x] `scripts/src/version.ts` — `package.json` 의 version 을 읽는 순수 함수(첫 줄 한국어 역할 주석)
+- [x] `scripts/test/version.test.ts` — 2건 (`node:test` + `node:assert`)
+- [x] `kern/package-lock.json` 생성·커밋, `node_modules/` 미추적 확인
+- [x] `npm test` 출력 인용 (pass 2 / fail 0, `a76f338`)
 
 **추천 프롬프트**
 ```text
@@ -313,8 +313,8 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T0 환경
 - [x] T1 README·editorconfig
 - [x] T1b dist 배포 방식 결정
-- [ ] T2 plugin.json
-- [ ] T3 scripts TS 프로젝트
+- [x] T2 plugin.json (인터랙티브 `--plugin-dir` 로드 확인만 미실행)
+- [x] T3 scripts TS 프로젝트
 - [ ] T4 CLI·shim
 - [ ] T5 라우터 스텁
 - [ ] T6 훅 스텁
