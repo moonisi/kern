@@ -33,6 +33,7 @@ kern 은 시험 학습 도구다. 틀린 사실·조작된 결과는 사용자�
 |---|---|
 | OS | Windows 11. Claude Code 는 **Git Bash** 에서 실행 (Git for Windows 설치 전제) |
 | 런타임 | Node ≥ 20, npm. Python 없음 |
+| `claude` 실행 파일 | 별도 CLI 설치 없음. 데스크톱 앱 번들 사용: `$APPDATA/Claude/claude-code/<version>/claude.exe` (PATH 에 없음, 앱 업데이트 시 `<version>` 변경). 이 문서의 `claude ...` 명령은 해당 절대경로로 실행 |
 | 언어 | TypeScript strict, ESM (`"type": "module"`) |
 | 테스트 | `node:test` 우선. 부족하면 vitest (도입 시 이 표 갱신) |
 | 경로 | 코드·설정·플러그인 컴포넌트 경로는 항상 `/`. 백슬래시 금지 (Windows 에서만 로드되는 컴포넌트가 됨) |
@@ -40,7 +41,7 @@ kern 은 시험 학습 도구다. 틀린 사실·조작된 결과는 사용자�
 | 셸 스크립트 | **작성 금지.** 훅·CLI·자동화는 전부 `node scripts/dist/*.js`. `bin/kern`(bash shim)과 `bin/kern.cmd` 는 `node` 호출 한 줄만 |
 | 외부 바이너리 | `yt-dlp`(opt-in)만 허용. PDF 렌더는 Node 라이브러리 우선 검토 |
 
-세션 시작 시 `node --version`, `npm --version`, `claude --version` 을 실제로 실행해 기록한다.
+세션 시작 시 `node --version`, `npm --version`, `claude --version` 을 실제로 실행해 기록한다. `claude` 는 번들 디렉토리에서 가장 높은 버전 폴더를 찾아 실행한다.
 
 ---
 
@@ -131,7 +132,8 @@ claude plugin eval ./kern             # evals 실행 (v2.1.269+)
 | Claude Code Windows PowerShell 폴백(v2.1.120+) | 🟡 문서 미반영 | 공식 setup 문서 재확인. 그 전까지 Git Bash 전제 |
 | `ts-fsrs` 최신 안정 버전 | 🔴 미확인 | S5 착수 시 `npm view ts-fsrs version` |
 | Node 순수 PDF 렌더 라이브러리 선택 | 🔴 미정 | S2 착수 시 후보 비교, 라이선스 확인 |
-| `claude plugin eval` 사용 가능 여부 | 🟡 v2.1.269+ | `claude --version` 확인 |
+| `claude plugin eval` 사용 가능 여부 | 🔵 사용 가능 (2026-09-21, 앱 번들 `claude.exe` 2.1.275 의 `plugin --help` 출력에 `eval`·`validate`·`details` 확인). 케이스 형식은 help 기준 `case.yaml` 또는 `prompt.md + graders/*.md`, 상세 스키마는 🔴 | T7 에서 `claude plugin eval --help`·공식 문서 확인 |
+| 앱 세션에서 로컬 플러그인 수동 로드(`--plugin-dir`) 방법 | 🔴 미확인 | T2 에서 번들 `claude.exe --plugin-dir ./kern` 을 터미널에서 실행해 확인 |
 | Agent SDK 과금·약관(풀 GUI 검토용) | 🟡 | S8 이후, 착수 전 문서 확인 |
 
 새 항목이 생기면 이 표에 추가하고, 확인되면 상태를 `🔵` 로 바꾸고 출처를 적는다.

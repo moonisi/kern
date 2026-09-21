@@ -10,10 +10,10 @@
 
 | # | 발견 | 상태 | 조치 |
 |---|---|---|---|
-| F1 | `node`, `npm`, `claude` 가 Git Bash·PowerShell 양쪽 PATH 에 없음. `C:\Program Files\nodejs`, nvm, fnm, Volta 경로도 없음 | 🔵 2026-09-21 실행 확인 (`command not found` / `없음`) | **T0 선행 필수.** 설치는 사용자가 수행 |
+| F1 | `node`, `npm`, `claude` 가 Git Bash·PowerShell 양쪽 PATH 에 없음. `C:\Program Files\nodejs`, nvm, fnm, Volta 경로도 없음 | 🔵 2026-09-21 실행 확인 (`command not found` / `없음`) | **T0 선행 필수.** Node 만 사용자가 설치. `claude` 는 앱 번들 `$APPDATA/Claude/claude-code/2.1.275/claude.exe` 사용(🔵 `--version`·`plugin --help` 실행 확인, D5) |
 | F2 | `.gitignore`, `.gitattributes`, `CLAUDE.md` 는 이미 존재하고 S0 요구를 충족 | 🔵 파일 읽음 | 해당 산출물은 T1 에서 제외 |
 | F3 | `dist/` 가 gitignore 인데 `bin/kern`·훅이 `scripts/dist/*.js` 를 호출 → git 으로 설치한 플러그인에는 `dist` 가 없음 | 🔵 구조상 사실 / 해결책 🔴 | S0 은 `--plugin-dir` 로컬 빌드 전제로 진행. 배포 방식은 T9 에서 `docs/decisions/` 에 미결로 기록 |
-| F4 | `plugin.json` 필드, `hooks.json` 스키마, `evals/` 케이스 형식, `claude plugin eval` 가용 여부 | 🔴 기억으로 작성 금지 (CLAUDE.md §0-4) | 각 task 첫 단계에서 공식 문서·`--help` 확인 후 출처를 커밋 본문에 기록 |
+| F4 | `plugin.json` 필드, `hooks.json` 스키마, `evals/` 케이스 상세 형식 (`claude plugin eval` 자체는 🔵 사용 가능, help 상 `case.yaml` 또는 `prompt.md + graders/*.md`) | 🔴 기억으로 작성 금지 (CLAUDE.md §0-4) | 각 task 첫 단계에서 공식 문서·`--help` 확인 후 출처를 커밋 본문에 기록 |
 | F5 | TS 를 `node:test` 로 돌리는 방법 (빌드 후 `node --test dist/` vs type stripping) | 🟡 | T3 에서 설치된 Node 버전 기준으로 결정. 기본안: `tsc` 빌드 후 `node --test` (추가 의존성 0) |
 | F6 | "`skills/` 빈 디렉토리" 는 git 이 추적하지 못함 | 🔵 | 라우터 스텁(T5)이 들어가므로 별도 조치 불필요 |
 | F7 | PRD §8.1 예시 `exam.yaml` 에는 `2nd` 논술 stage 가 있으나 `sample-cert` 는 객관식+단답만 | 🔵 PRD §10 | T8 초안에서 `2nd` stage 제외 (논술은 S7 `sample-essay`) |
@@ -27,6 +27,13 @@
 | D2 | `dist` 배포 방식(F3)은 **S0 안에서 조사 후 결정** | T1b 신설, T9 의 미결 기록 항목 대체 |
 | D3 | `claude plugin eval` 불가 시 T7 **보류 + S0 조건부 완료**, S1 진행 | T7, T9 |
 | D4 | task 는 묶지 않고 유지, 계획서 즉시 커밋 | — |
+| D5 | Claude Code CLI 는 **별도 설치하지 않음**. 앱 번들 `claude.exe` 를 절대경로로 호출(PATH 에 없음, 앱 업데이트 시 버전 폴더 변경) | T0, 모든 `claude ...` 검증 명령 |
+
+**`claude` 호출 방법 (이하 모든 task 의 `claude ...` 는 이 방식으로 실행)**
+```bash
+CLAUDE="$(ls -d "$APPDATA"/Claude/claude-code/*/ | sort -V | tail -1)claude.exe"
+"$CLAUDE" --version
+```
 
 ## 1. Task 목록과 의존 관계
 
@@ -48,24 +55,24 @@ T2 이전에는 validate 대상이 없으므로 T1 은 validate 를 "해당 없�
 
 ## T0 — 개발 환경 준비 (사용자 수행 + 확인)
 
-**목표**: Git Bash·PowerShell 양쪽에서 `node`(≥20), `npm`, `claude` 실행 가능.
+**목표**: Git Bash·PowerShell 양쪽에서 `node`(≥20), `npm` 실행 가능 + 앱 번들 `claude.exe` 호출 확인.
 
 **체크리스트**
-- [ ] Node LTS 설치 (사용자). 설치 후 **새 터미널** 열기
-- [ ] Claude Code CLI 설치 (사용자). 설치 방법은 공식 setup 문서 확인
-- [ ] Git Bash 에서 `node --version; npm --version; claude --version` 출력 기록
+- [ ] Node LTS 를 winget 으로 설치 (사용자). 설치 후 **앱 재시작**(새 PATH 반영)
+- [ ] Git Bash 에서 `node --version; npm --version` 출력 기록
 - [ ] PowerShell 에서 동일 명령 출력 기록
-- [ ] `claude plugin --help` 출력에 `validate`, `details`, `eval` 존재 여부 확인 → CLAUDE.md §8 표 갱신
+- [ ] 위 "`claude` 호출 방법" 스니펫으로 번들 `claude.exe --version` 출력 기록
+- [x] `claude plugin --help` 에 `validate`, `details`, `eval` 존재 확인 → CLAUDE.md §8 갱신 (2026-09-21 완료, 2.1.275)
 
 **추천 프롬프트**
 ```text
-T0 확인: Git Bash 와 PowerShell 각각에서 node/npm/claude --version 과 `claude plugin --help` 를 실행해
-출력을 그대로 인용하고, CLAUDE.md §8 표의 `claude plugin eval` 항목 상태를 결과에 맞게 갱신해줘. 설치는 하지 마.
+T0 확인: Git Bash 와 PowerShell 각각에서 node/npm --version 을, 그리고 s0-plan.md 의 호출 방법으로 번들 claude.exe --version 을
+실행해 출력을 그대로 인용해줘. 설치는 하지 마.
 ```
 
-**검증**: 두 셸 모두 버전 3종 출력. Node major ≥ 20. 실패 시 PATH 문제인지 미설치인지 구분해 보고.
+**검증**: 두 셸 모두 node·npm 버전 출력, Node major ≥ 20. 번들 `claude.exe` 버전 출력. 실패 시 PATH 문제인지 미설치인지 구분해 보고.
 
-**커밋**: `docs(claude): 툴체인 버전·plugin eval 가용 여부 기록`
+**커밋**: `docs(claude): 툴체인 버전 기록` (CLAUDE.md 에 기록할 변경이 있을 때만)
 
 ---
 
