@@ -105,7 +105,7 @@ gantt
 **DoD**
 - 스키마 단위 테스트: 정상·필드 누락·`handler: UNSUPPORTED` 케이스
 - `init-exam` 을 샘플 원문으로 실행 → 생성된 `exam.yaml` 이 기대값과 필드 단위 일치, `verified: true`
-- 원문 없이 실행 → 모든 필드 `verified: false` + 확인 요청 메시지
+- 원문 없이 실행 → `exam.yaml` 미작성(필수 값이 모자랄 때) 또는 `verified: false` + 확인 요청 메시지. 빈 값을 지어내 채우지 않는다
 - 분류체계 추출 실패 시 빈 트리 + 수동 편집 안내 (테스트 케이스로 고정)
 
 **리스크**: 스키마 과잉 일반화. S1에서는 `sample-cert` 에 필요한 필드만 넣고, S7에서 v2로 개정한다.
