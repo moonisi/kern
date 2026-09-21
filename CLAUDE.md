@@ -119,7 +119,8 @@ cd kern && npm test
 claude plugin validate ./kern --strict
 claude --plugin-dir ./kern            # 수동 로드 확인
 claude plugin details kern            # always-on 토큰 확인, 증가 시 보고
-claude plugin eval ./kern             # evals 실행 (v2.1.269+)
+claude plugin eval ./kern --no-publish   # evals 실행 (v2.1.269+). 리포트 claude.ai 게시 생략(기본값은 게시)
+                                         # 첫 실행 신뢰 확인으로 막히면 --trust-plugin 추가 (이 저장소 한정)
 ```
 
 명령이 실패하면 출력 전체를 인용하고 원인 추정에 `🟡` 를 붙인다. 실패를 우회하기 위해 테스트를 약화하거나 삭제하지 않는다.
