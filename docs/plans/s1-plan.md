@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0~T2 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0~T5 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -141,10 +141,10 @@ S1-T2: scripts/src/vault/ 에 paths.ts·frontmatter.ts·io.ts 를 만들어줘. 
 ## T3 — `vault/attempts.ts` append-only 로그
 
 **체크리스트**
-- [ ] `schema/attempt.ts`: PRD §8.3 필드 zod 스키마(`ts` 는 오프셋 포함 ISO 문자열, `rating` 은 선택 🟡 — S5 전에는 값이 없음)
-- [ ] `appendAttempt(vaultRoot, attempt)`: 검증 → 한 줄 JSON + `\n` append. 덮어쓰기·truncate API 사용 금지
-- [ ] 테스트: 2회 append → 2줄, 기존 줄 불변 / 잘못된 attempt → 예외 + 파일 불변 / 파일 없음 → 생성
-- [ ] 읽기·집계 함수는 만들지 않음(F12)
+- [x] `schema/attempt.ts`: PRD §8.3 필드 zod 스키마(`ts` 는 오프셋 포함 ISO 문자열, `rating` 은 선택 🟡 — S5 전에는 값이 없음) — 🔵 `mode`·`rating` 은 PRD 에 값 목록이 없어 문자열(S3·S5 에서 enum 으로), `correct` 는 `boolean|null`(PRD §8.4)
+- [x] `appendAttempt(vaultRoot, attempt)`: 검증 → 한 줄 JSON + `\n` append. 덮어쓰기·truncate API 사용 금지
+- [x] 테스트: 2회 append → 2줄, 기존 줄 불변 / 잘못된 attempt → 예외 + 파일 불변 / 파일 없음 → 생성 — 🔵 7건, `npm test` pass 47 / fail 0
+- [x] 읽기·집계 함수는 만들지 않음(F12)
 
 **추천 프롬프트**
 ```text
@@ -161,11 +161,11 @@ S1-T3: attempts.jsonl append 함수를 만들어줘. PRD §8.3 을 zod 로 검�
 ## T4 — `scripts/src/id.ts` 문항 ID
 
 **체크리스트**
-- [ ] `itemId({code, subject, body, choices?}) → "{code}_{subject}_{hash8}"` 순수 함수(Q3). 해시는 `node:crypto` sha256
-- [ ] 정규화 규칙을 코드 주석에 명시: 공백 축약·trim·NFC 🟡. 선지 **순서는 해시에 포함**(순서가 다르면 다른 문항)
-- [ ] `code`·`subject` 에 `_`·공백·대문자 등이 있으면 예외(ID 파싱 가능성 보장)
-- [ ] 테스트: 동일 입력 동일 ID / 공백 차이 동일 ID / 본문 1자 차이 다른 ID / 형식 정규식 / 잘못된 code 예외
-- [ ] `docs/prd.md` §8.2 예시 ID 를 8자로 정정(F9)
+- [x] `itemId({code, subject, body, choices?}) → "{code}_{subject}_{hash8}"` 순수 함수(Q3). 해시는 `node:crypto` sha256 — 🔵 해시 입력은 `JSON.stringify([본문, 선지|null])`(선지 경계 보존)
+- [x] 정규화 규칙을 코드 주석에 명시: 공백 축약·trim·NFC 🟡. 선지 **순서는 해시에 포함**(순서가 다르면 다른 문항)
+- [x] `code`·`subject` 에 `_`·공백·대문자 등이 있으면 예외(ID 파싱 가능성 보장)
+- [x] 테스트: 동일 입력 동일 ID / 공백 차이 동일 ID / 본문 1자 차이 다른 ID / 형식 정규식 / 잘못된 code 예외 — 🔵 9건, `npm test` pass 56 / fail 0
+- [x] `docs/prd.md` §8.2 예시 ID 를 8자로 정정(F9)
 
 **추천 프롬프트**
 ```text
@@ -182,12 +182,12 @@ S1-T4: scripts/src/id.ts 에 문항 ID 생성 순수 함수를 만들어줘. 형
 ## T5 — CLI 서브커맨드 분기 + `kern validate-exam`
 
 **체크리스트**
-- [ ] `args.ts` `ParsedArgs` 확장: `validate-exam [path]`(기본 `00_Exam/exam.yaml`), 기존 `--version`·오류 동작 유지. 기존 테스트 4건 그대로 통과
-- [ ] `cli.ts` 는 분기만, 로직은 `commands/validate-exam.ts`(결과 객체 반환, 출력·exit code 는 cli 에서)
-- [ ] 동작: 통과 → `통과` + UNSUPPORTED 경고 목록, exit 0 / 스키마 오류 → 필드 경로 포함 한국어 메시지, exit 1 / 파일 없음 → exit 1
-- [ ] **F6 가드**: `verified: true` 인데 `criteria_source`(exam.yaml 기준 상대경로) 파일이 없으면 오류
-- [ ] 테스트: 임시 디렉토리 픽스처로 4 경로 + 실제 프로세스 실행 1건(`brief.test.ts` 방식 참고)
-- [ ] Git Bash `./kern/bin/kern validate-exam examples/sample-cert/exam.yaml`, PowerShell `.\kern\bin\kern.cmd ...` 출력 인용
+- [x] `args.ts` `ParsedArgs` 확장: `validate-exam [path]`(기본 `00_Exam/exam.yaml`), 기존 `--version`·오류 동작 유지. 기존 테스트 4건 그대로 통과 — 🔵 worktree 에이전트 구현 → 리뷰 후 cherry-pick. `node:util` `parseArgs` 미사용(위치 인자 1개라 수작업 분기)
+- [x] `cli.ts` 는 분기만, 로직은 `commands/validate-exam.ts`(결과 객체 반환, 출력·exit code 는 cli 에서)
+- [x] 동작: 통과 → `통과` + UNSUPPORTED 경고 목록, exit 0 / 스키마 오류 → 필드 경로 포함 한국어 메시지, exit 1 / 파일 없음 → exit 1
+- [x] **F6 가드**: `verified: true` 인데 `criteria_source`(exam.yaml 기준 상대경로) 파일이 없으면 오류
+- [x] 테스트: 임시 디렉토리 픽스처로 4 경로 + 실제 프로세스 실행 1건(`brief.test.ts` 방식 참고)
+- [x] Git Bash `./kern/bin/kern validate-exam examples/sample-cert/exam.yaml`, PowerShell `.\kern\bin\kern.cmd ...` 출력 인용 — 🔵 main 에서 두 셸 모두 `통과` / exit 0, 없는 파일은 exit 1. `npm test` pass 68 / fail 0. 가드는 `existsSync` 라 디렉토리도 통과함(🟡 T7 이후 재검토)
 
 **추천 프롬프트**
 ```text
@@ -335,9 +335,9 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T0 의존성 승인·설치
 - [x] T1 exam 스키마
 - [x] T2 vault 경로·IO
-- [ ] T3 attempts append
-- [ ] T4 문항 ID
-- [ ] T5 validate-exam
+- [x] T3 attempts append
+- [x] T4 문항 ID
+- [x] T5 validate-exam
 - [ ] T6 init-vault
 - [ ] T7 sample-cert 원문·기대값
 - [ ] T8 init-exam 스킬·에이전트
