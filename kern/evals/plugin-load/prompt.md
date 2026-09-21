@@ -1,5 +1,5 @@
 ---
-description: 플러그인이 로드되어 라우터 스킬 kern 이 호출되고 S0 고정 문장을 출력하는지 확인한다
+description: 플러그인이 로드되어 라우터 스킬 kern 이 호출되고, exam.yaml 이 없을 때 init-exam 직접 입력 안내 고정 문장을 출력하는지 확인한다
 tags: [smoke]
 runs: 1
 model: haiku

@@ -1,4 +1,4 @@
 ---
 type: regex
-pattern: '추천할 수 있는 커맨드가 없습니다'
+pattern: '/kern:init-exam 을 직접 입력해 시험 프로파일을 먼저 만드세요'
 ---
