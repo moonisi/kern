@@ -79,10 +79,10 @@ T0 확인: Git Bash 와 PowerShell 각각에서 node/npm --version 을, 그리�
 ## T1 — 저장소 위생: `README.md`, `.editorconfig`
 
 **체크리스트**
-- [ ] `.editorconfig` (utf-8, lf, 2 spaces, final newline) — `.gitattributes` 와 모순 없는지 확인
-- [ ] `README.md`: 한 줄 정의, 현재 상태(S0), 요구 환경, 개발 명령(CLAUDE.md §7), 라이선스 MIT. **미구현 기능을 구현된 것처럼 쓰지 않는다**
-- [ ] `LICENSE`(MIT) 유무 확인 → 없으면 추가 여부를 사용자에게 질문
-- [ ] `git status` 인용 후 커밋
+- [x] `.editorconfig` (utf-8, lf, 2 spaces, final newline) — `.gitattributes` 와 모순 없는지 확인 (둘 다 lf)
+- [x] `README.md`: 한 줄 정의, 현재 상태(S0), 요구 환경, 개발 명령(CLAUDE.md §7), 라이선스 MIT. **미구현 기능을 구현된 것처럼 쓰지 않는다**
+- [x] `LICENSE`(MIT) 유무 확인 → 없으면 추가 여부를 사용자에게 질문 (🔵 2026-09-21 없음 확인, 사용자에게 질문함 — 추가 여부 미결)
+- [x] `git status` 인용 후 커밋
 
 **추천 프롬프트**
 ```text
