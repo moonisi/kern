@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0~T8 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0~T9 완료(T9 의 init-exam evals 는 Windows 실행 불가 → 수동 검증, 조건부) |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -14,7 +14,7 @@
 | F1 | 런타임 의존성이 처음 생긴다: `zod`(CLAUDE.md §5 필수) + YAML 파서. 현재 `kern/package.json` 은 devDependencies 뿐 | 🔵 파일 읽음. 버전·라이선스는 🔴 | T0 에서 `npm view <pkg> version license` 인용 → 사용자 승인 → 설치. 추천: `zod` + `yaml` 2개. frontmatter 는 `---` 분리 + `yaml` 로 자체 파서(짧음). `gray-matter` 는 자체 YAML 파서(`js-yaml` 🟡)를 끌고 와 파서가 2개가 되므로 비추천 |
 | F2 | `--plugin-dir`/in-place 로드는 의존성을 설치해 주지 않는다(결정 0001 사실 5, `--plugin-dir` 는 🟡). 캐시 설치는 `npm ci` 로 설치됨(사실 2·11 🔵) | 🔵/🟡 | 개발 중에는 `cd kern && npm ci` 선행. T10 에서 `node_modules` 없는 상태의 에러 메시지가 조용하지 않은지 1회 확인 |
 | F3 | `exam.yaml` 의 `criteria_source: "criteria/2026_criteria.pdf"` 인데 S1 원문은 "자작". PDF 를 만들려면 도구·의존성이 필요. PRD §6.2 는 `criteria/` 에 PDF/MD 모두 허용 | 🔵 | **MD 로 작성**하고 `criteria_source` 를 `criteria/2026_criteria.md` 로 변경(Q1). PDF 입력 검증은 S2(ingest) 로 미룸 |
-| F4 | DoD "생성된 `exam.yaml` 이 기대값과 **필드 단위 일치**" 는 LLM 실행 결과의 비교다. `claude plugin eval` grader(`regex`·`file_exists`·`tool_used`·`llm`)가 **생성 파일 내용**을 검사할 수 있는지 | 🔴 미확인 | T9 첫 단계에서 https://code.claude.com/docs/en/plugin-evals 로 확인. 불가하면: scratchpad vault 에서 `claude -p` 수동 실행 → `node:assert.deepStrictEqual`(파싱된 YAML) 로 비교, 출력 인용. LLM judge 로 "일치" 판정은 쓰지 않음 |
+| F4 ✅ | DoD "생성된 `exam.yaml` 이 기대값과 **필드 단위 일치**" 는 LLM 실행 결과의 비교다. `claude plugin eval` grader(`regex`·`file_exists`·`tool_used`·`llm`)가 **생성 파일 내용**을 검사할 수 있는지 | 🔴 미확인 | T9 첫 단계에서 https://code.claude.com/docs/en/plugin-evals 로 확인. 불가하면: scratchpad vault 에서 `claude -p` 수동 실행 → `node:assert.deepStrictEqual`(파싱된 YAML) 로 비교, 출력 인용. LLM judge 로 "일치" 판정은 쓰지 않음 |
 | F5 | `disable-model-invocation: true` 스킬을 eval 프롬프트에서 `/kern:init-exam` 으로 호출할 수 있는지 | 🔴 미확인 | T9 첫 단계에서 문서·실행으로 확인. 불가하면 F4 의 수동 경로로 대체하고 evals 는 "보류"로 보고 |
 | F6 | `exam.verified: true` 를 누가 쓰는가. CLAUDE.md §0-6 의 "`verified` 는 verify 스크립트만" 은 **문항 status** 규칙이고, `exam.verified` 는 PRD P3(원문 확인 여부)라 별개 | 🔵 문서 읽음. 정책은 미정(Q2) | 추천: 에이전트가 쓰되 `validate-exam` 이 결정적 가드를 건다 — `verified: true` 인데 `criteria_source` 파일이 없으면 **오류**. 원문 없는 `true` 를 스크립트가 차단 |
 | F7 | 핸들러 값 범위. PRD 는 `mcq`·`short_answer`·`essay_rubric`·`UNSUPPORTED`·`ext:...` 를 언급하나 roadmap 리스크는 "`sample-cert` 에 필요한 필드만" | 🔵 | S1 스키마: `mcq` \| `short_answer` \| `UNSUPPORTED` 만. `UNSUPPORTED` 는 검증 통과 + 경고 출력(exit 0). 그 외 문자열은 오류. stage 레벨 `handler`·`rubric_source`·`ext:` 는 S7 v2 |
@@ -277,13 +277,13 @@ exam.yaml 은 반드시 kern validate-exam 통과로 끝나게 해. 시험 정�
 ## T9 — evals 3건 + 라우터 스텁 갱신
 
 **체크리스트**
-- [ ] F4·F5 를 문서로 먼저 확인(URL 기록). 결과에 따라 아래 케이스의 grader 를 결정하고, 불가한 부분은 **지어내지 말고** 수동 검증으로 대체·보고
-- [ ] `evals/init-exam-with-source/`: 샘플 원문 제공 → 결과 보고 블록 + `verified: true` + `validate-exam` 호출(`tool_used`/`tool_order` 🟡)
-- [ ] `evals/init-exam-no-source/`: 원문 없이 → `verified: false` + 확인 요청 고정 문구(regex)
-- [ ] `evals/init-exam-taxonomy-fail/`: 단원 정보가 없는 원문 → 수동 편집 안내 문구(regex)
-- [ ] 필드 단위 일치(DoD): eval 로 가능하면 eval, 아니면 scratchpad 수동 실행 → `deepStrictEqual` 비교 출력 인용
-- [ ] 라우터 스텁(F11, Q5): "S0"·"라우터만 들어 있다" 제거, `exam.yaml` 없으면 `/kern:init-exam` 직접 입력 안내 1개. `evals/plugin-load` regex 갱신
-- [ ] `claude plugin eval ./kern --trust-plugin --no-publish` 전체 출력 인용, 비용 기록
+- [x] F4·F5 를 문서로 먼저 확인(URL 기록). 결과에 따라 아래 케이스의 grader 를 결정하고, 불가한 부분은 **지어내지 말고** 수동 검증으로 대체·보고 — 🔵 https://code.claude.com/docs/en/plugin-evals . F4: `regex` + `target: { source: file, path }` 로 가능. F5: 문서에 언급 없음 → 실측으로 가능 확인. **새 제약 🔵**: native Windows 는 Bash grant run 거부 + `--scaffold` 경로 버그 → init-exam 3건은 `needs-bash` 태그로 커밋하고 Windows 에서는 수동 검증(2026-09-21 사용자 결정, CLAUDE.md §8)
+- [x] `evals/init-exam-with-source/`: 샘플 원문 제공 → 결과 보고 블록 + `verified: true` + `validate-exam` 호출(`tool_used`/`tool_order` 🟡)
+- [x] `evals/init-exam-no-source/`: 원문 없이 → `verified: false` + 확인 요청 고정 문구(regex)
+- [x] `evals/init-exam-taxonomy-fail/`: 단원 정보가 없는 원문 → 수동 편집 안내 문구(regex)
+- [x] 필드 단위 일치(DoD): eval 로 가능하면 eval, 아니면 scratchpad 수동 실행 → `deepStrictEqual` 비교 출력 인용 — 🔵 수동 3경로(`claude -p`, stream-json): grader 13개 정의를 그대로 적용해 실패 0건, with-source·taxonomy-fail 의 `exam.yaml` 모두 기대값과 `deepStrictEqual` 일치 + `validate-exam` 통과. 서브에이전트 위임(`Agent` 호출)·`init-vault → validate-exam` 순서도 trace 로 확인. 비용 $0.58 / $0.43 / $0.30
+- [x] 라우터 스텁(F11, Q5): "S0"·"라우터만 들어 있다" 제거, `exam.yaml` 없으면 `/kern:init-exam` 직접 입력 안내 1개. `evals/plugin-load` regex 갱신
+- [x] `claude plugin eval ./kern --trust-plugin --no-publish` 전체 출력 인용, 비용 기록 — 🔵 Windows 는 `--tag smoke`: `plugin-load` with 1.00 / without 0.00 / Δ +1.00, $0.05. 🔴 `needs-bash` 3건은 eval 하네스로 **한 번도 통과 실행하지 못함**(로드·스키마만 확인). WSL2/Linux 에서 첫 실행 필요
 
 **추천 프롬프트**
 ```text
@@ -342,7 +342,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T6 init-vault
 - [x] T7 sample-cert 원문·기대값
 - [x] T8 init-exam 스킬·에이전트
-- [ ] T9 evals·라우터 스텁
+- [x] T9 evals·라우터 스텁 (init-exam evals 는 수동 검증으로 대체)
 - [ ] T10 종합 검증
 
 ## 3. 반대 관점·반례

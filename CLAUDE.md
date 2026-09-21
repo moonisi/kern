@@ -38,7 +38,7 @@ kern 은 시험 학습 도구다. 틀린 사실·조작된 결과는 사용자�
 | 테스트 | `node:test` 우선. 부족하면 vitest (도입 시 이 표 갱신) |
 | 경로 | 코드·설정·플러그인 컴포넌트 경로는 항상 `/`. 백슬래시 금지 (Windows 에서만 로드되는 컴포넌트가 됨) |
 | 줄바꿈 | `.gitattributes: * text=auto eol=lf`. CRLF 커밋 금지 |
-| 셸 스크립트 | **작성 금지.** 훅·CLI·자동화는 전부 `node scripts/src/*.ts`. `bin/kern`(bash shim)과 `bin/kern.cmd` 는 `node` 호출 한 줄만 |
+| 셸 스크립트 | **작성 금지.** 훅·CLI·자동화는 전부 `node scripts/src/*.ts`. `bin/kern`(bash shim)과 `bin/kern.cmd` 는 `node` 호출 한 줄만. 예외(2026-09-21 사용자 승인): evals 의 `scaffold_script` 는 하네스가 Bash 만 받으므로 `evals/<case>/fixture.sh` 에 `node` 호출 한 줄 shim 허용, 로직은 `evals/_fixtures/*.ts` |
 | 외부 바이너리 | `yt-dlp`(opt-in)만 허용. PDF 렌더는 Node 라이브러리 우선 검토 |
 
 세션 시작 시 `node --version`, `npm --version`, `claude --version` 을 실제로 실행해 기록한다. `claude` 는 번들 디렉토리에서 가장 높은 버전 폴더를 찾아 실행한다.
@@ -119,8 +119,11 @@ cd kern && npm test
 claude plugin validate ./kern --strict
 claude --plugin-dir ./kern            # 수동 로드 확인
 claude plugin details kern            # always-on 토큰 확인, 증가 시 보고
-claude plugin eval ./kern --no-publish   # evals 실행 (v2.1.269+). 리포트 claude.ai 게시 생략(기본값은 게시)
+claude plugin eval ./kern --tag smoke --no-publish   # Windows 에서 돌릴 수 있는 evals (v2.1.269+). 리포트 claude.ai 게시 생략(기본값은 게시)
                                          # 첫 실행 신뢰 확인으로 막히면 --trust-plugin 추가 (이 저장소 한정)
+# needs-bash 태그 케이스(init-exam-*)는 native Windows 에서 실행 불가(§8). 샌드박스 백엔드가 있는 WSL2/Linux/macOS 에서:
+claude plugin eval ./kern --tag needs-bash --scaffold --allow-tools Write Edit "Bash(node *)" "Bash(cp *)" --no-publish
+# Windows 에서는 같은 fixture(evals/_fixtures/seed-criteria.ts)로 scratchpad vault 를 만들어 PowerShell `claude -p "/kern:init-exam"` 수동 실행 후 grader 정규식을 적용해 확인
 ```
 
 명령이 실패하면 출력 전체를 인용하고 원인 추정에 `🟡` 를 붙인다. 실패를 우회하기 위해 테스트를 약화하거나 삭제하지 않는다.
@@ -135,6 +138,7 @@ claude plugin eval ./kern --no-publish   # evals 실행 (v2.1.269+). 리포트 c
 | `ts-fsrs` 최신 안정 버전 | 🔴 미확인 | S5 착수 시 `npm view ts-fsrs version` |
 | Node 순수 PDF 렌더 라이브러리 선택 | 🔴 미정 | S2 착수 시 후보 비교, 라이선스 확인 |
 | `claude plugin eval` 사용 가능 여부 | 🔵 사용 가능 (2026-09-21, 앱 번들 `claude.exe` 2.1.275 의 `plugin --help` 출력에 `eval`·`validate`·`details` 확인). 케이스 형식 🔵 (2026-09-21, S0-T7): `prompt.md`(frontmatter + 자연어 프롬프트) + `graders/*.md`. grader type 은 결정적 `regex`·`tool_used`·`tool_order`·`file_exists`, judge 호출 `llm`·`baseline`. 기본 ablation(with-without)에서 `tool_used: Skill` 은 점수 미반영 지표. `evals/plugin-load` 실행 통과 확인 | 출처: `claude plugin eval --help`, `init --bare` 템플릿, https://code.claude.com/docs/en/plugin-evals . 실행은 `claude plugin eval ./kern --trust-plugin --no-publish` |
+| native Windows 에서 Bash 를 쓰는 evals | 🔵 실행 불가 (2026-09-21, S1-T9 실측, `claude.exe` 2.1.275). `--allow-tools Bash(...)` → run 거부: `sandbox required but unavailable: ... the Windows sandbox is not active on this session (feature gate off)`. `--scaffold` → `scaffold failed (exit 127)`: 하네스가 `fixture.sh` 경로를 백슬래시째 `/bin/bash` 에 넘김. 그 외 🔵: `regex` grader 의 `target: { source: file, path }` 로 생성 파일 내용 검사 가능, eval 프롬프트의 `/kern:<skill>` 로 `disable-model-invocation` 스킬 호출 가능 | 출처: https://code.claude.com/docs/en/plugin-evals ("Native Windows has no backend, so run shell-granting suites under WSL2") + 실측. 앱 업데이트 뒤 재확인 |
 | 앱 세션에서 로컬 플러그인 수동 로드(`--plugin-dir`) 방법 | 🔵 CLI 로드 확인 (2026-09-21, 번들 `claude.exe` 2.1.275 `--plugin-dir ./kern plugin details kern` 출력에 `kern 0.0.1`, `Source: kern@inline`). 인터랙티브·앱 세션 로드는 🔴 미실행 | 인터랙티브는 터미널에서 `claude.exe --plugin-dir ./kern` 실행 후 `/plugin` 으로 확인 |
 | Agent SDK 과금·약관(풀 GUI 검토용) | 🟡 | S8 이후, 착수 전 문서 확인 |
 
