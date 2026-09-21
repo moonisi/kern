@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0~T5 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0~T6 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -204,12 +204,12 @@ verified: true 인데 criteria_source 파일이 없으면 오류로 처리해. U
 ## T6 — `kern init-vault`
 
 **체크리스트**
-- [ ] `kern init-vault [dir]`(기본 cwd): PRD §6.2 디렉토리 생성. **기존 파일은 절대 덮어쓰지 않음**, 이미 있으면 건너뛰고 목록 출력
-- [ ] `taxonomy.md` 스켈레톤(F8): 렌더 순수 함수 `renderTaxonomySkeleton(subjects)` — 과목 헤더 + "분류체계를 자동 추출하지 못했습니다. 아래를 직접 채우세요" 안내. `exam.yaml` 이 없으면 과목 없이 안내문만
-- [ ] 빈 디렉토리는 git 이 추적 못 함 — vault 는 gitignore 대상이라 무관, `.gitkeep` 만들지 않음
-- [ ] 쓰기는 전부 `vault/io.ts` 경유
-- [ ] 테스트: 빈 디렉토리 → 표준 구조 전부 존재 / 2회 실행 멱등(기존 파일 내용 불변) / 스켈레톤 문자열 고정
-- [ ] 생성 디렉토리명이 `.gitignore` 의 `*-vault/` 와 무관하게 테스트는 tmpdir 에서만 수행(저장소에 vault 생성 금지)
+- [x] `kern init-vault [dir]`(기본 cwd): PRD §6.2 디렉토리 생성. **기존 파일은 절대 덮어쓰지 않음**, 이미 있으면 건너뛰고 목록 출력
+- [x] `taxonomy.md` 스켈레톤(F8): 렌더 순수 함수 `renderTaxonomySkeleton(subjects)` — 과목 헤더 + "분류체계를 자동 추출하지 못했습니다. 아래를 직접 채우세요" 안내. `exam.yaml` 이 없으면 과목 없이 안내문만
+- [x] 빈 디렉토리는 git 이 추적 못 함 — vault 는 gitignore 대상이라 무관, `.gitkeep` 만들지 않음
+- [x] 쓰기는 전부 `vault/io.ts` 경유
+- [x] 테스트: 빈 디렉토리 → 표준 구조 전부 존재 / 2회 실행 멱등(기존 파일 내용 불변) / 스켈레톤 문자열 고정 — 🔵 8건 + args 2건, `npm test` pass 78 / fail 0. scratchpad 실행: 1회차 생성 15 / 건너뜀 0, 2회차 생성 0 / 건너뜀 15. `io.ts` 에 `ensureDir`·`writeTextIfAbsent`(flag `wx`) 추가. 잘못된 `exam.yaml` 이 있으면 아무것도 만들지 않고 exit 1
+- [x] 생성 디렉토리명이 `.gitignore` 의 `*-vault/` 와 무관하게 테스트는 tmpdir 에서만 수행(저장소에 vault 생성 금지)
 
 **추천 프롬프트**
 ```text
@@ -338,7 +338,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T3 attempts append
 - [x] T4 문항 ID
 - [x] T5 validate-exam
-- [ ] T6 init-vault
+- [x] T6 init-vault
 - [ ] T7 sample-cert 원문·기대값
 - [ ] T8 init-exam 스킬·에이전트
 - [ ] T9 evals·라우터 스텁
