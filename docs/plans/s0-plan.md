@@ -172,13 +172,13 @@ git status --short   # node_modules 가 나오면 실패
 ## T4 — CLI `kern --version` + `bin/kern`, `bin/kern.cmd`
 
 **체크리스트**
-- [ ] `scripts/src/cli.ts`: `--version` → 버전 출력 후 exit 0. 알 수 없는 인자 → 한국어 에러 + exit 1 (조용한 실패 금지)
-- [ ] 인자 파싱은 순수 함수로 분리하고 단위 테스트 (`--version`, 인자 없음, 미지 인자)
-- [ ] `bin/kern`: `node` 호출 한 줄 (shebang + exec). `bin/kern.cmd`: `node` 호출 한 줄
-- [ ] `bin/kern` 실행 비트: `git update-index --chmod=+x` 필요 여부 확인
-- [ ] Git Bash: `./kern/bin/kern --version` / PowerShell: `.\kern\bin\kern.cmd --version` 출력 인용
-- [ ] 공백 포함 경로에서도 동작하는지 1회 확인(따옴표 처리)
-- [ ] **결정 0001 의 🔴 검증**: 로컬 마켓플레이스로 설치해 캐시 복사본에서 `kern --version` 이 `.ts` 직접 실행으로 동작하는지 확인. 실패 시 출력 인용 후 (b) `dist` 커밋으로 되돌릴지 사용자에게 질문
+- [x] `scripts/src/cli.ts`: `--version` → 버전 출력 후 exit 0. 알 수 없는 인자 → 한국어 에러 + exit 1 (조용한 실패 금지)
+- [x] 인자 파싱은 순수 함수로 분리하고 단위 테스트 (`--version`, 인자 없음, 미지 인자) — `scripts/src/args.ts`, 4건
+- [x] `bin/kern`: `node` 호출 한 줄 (shebang + exec). `bin/kern.cmd`: `node` 호출 한 줄
+- [x] `bin/kern` 실행 비트: `git update-index --chmod=+x` 필요 여부 확인 — 🔵 필요(`core.fileMode=false` 라 100644 로 스테이징됨), 100755 기록
+- [x] Git Bash: `./kern/bin/kern --version` / PowerShell: `.\kern\bin\kern.cmd --version` 출력 인용 (둘 다 `0.0.1`, `d7a3f91`)
+- [x] 공백 포함 경로에서도 동작하는지 1회 확인(따옴표 처리) — sh·cmd 모두 `0.0.1`
+- [ ] **결정 0001 의 🔴 검증** → **T9 로 이관 (2026-09-21 사용자 결정)**. 🔵 로컬 디렉토리 마켓플레이스의 상대경로 source 는 캐시로 복사되지 않고 제자리 로드되므로 이 방법으로는 검증 불가 (https://code.claude.com/docs/en/plugins-reference "Plugin caching and file resolution")
 
 **추천 프롬프트**
 ```text
@@ -281,6 +281,7 @@ PRD §8.1 을 따르되 2차 논술 stage 는 빼. 실제 시험을 연상시키
 - [ ] 아래 DoD 명령 전부 실행, 출력 인용
 - [ ] `claude plugin details kern` always-on 토큰 값을 `docs/decisions/` 또는 roadmap 에 기록(기준선)
 - [ ] T1b 결정이 bin·훅 경로에 실제 반영됐는지 확인
+- [ ] **결정 0001 사실 12 🔴 검증 (T4 에서 이관)**: 캐시 복사가 일어나는 source(🟡 git 계열 `github`/`url`, 원격 push·`marketplace.json`·`~/.claude` 등록 필요 — 각각 사용자 승인)로 설치해 캐시 복사본에서 `kern --version` 이 `.ts` 직접 실행으로 동작하는지 확인. 실패 시 출력 인용 후 (b) `dist` 커밋으로 되돌릴지 사용자에게 질문
 - [ ] T7 이 보류면 S0 을 "조건부 완료(evals 보류)"로 보고(D3)
 - [ ] roadmap S0 세션 수를 실측치로 갱신, CLAUDE.md §8 표 상태 갱신
 - [ ] 미완료 항목이 있으면 숨기지 말고 S0 "부분 완료"로 보고
@@ -315,7 +316,7 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T1b dist 배포 방식 결정
 - [x] T2 plugin.json (인터랙티브 `--plugin-dir` 로드 확인만 미실행)
 - [x] T3 scripts TS 프로젝트
-- [ ] T4 CLI·shim
+- [x] T4 CLI·shim (캐시 복사본 검증은 T9 로 이관)
 - [ ] T5 라우터 스텁
 - [ ] T6 훅 스텁
 - [ ] T7 evals 1건
