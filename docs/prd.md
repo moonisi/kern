@@ -461,6 +461,7 @@ export interface GradeResult {
 | Q4 | `essay_rubric` 루브릭 형식 | 항목·배점·판정 기준의 YAML | v1.5 착수 시 |
 | Q5 | vault 다중 시험 지원 | 지원 안 함 (시험 1개 = vault 1개) | 변경 없음 |
 | Q6 | `ts-fsrs` 정확한 버전 | 설치 시 `npm view ts-fsrs version` 으로 고정 | 단계 2 |
+| Q7 | `subjects[].weight` 의 의미 | 미정. §8.1 예시에만 있고 쓰는 곳이 없다(기출 빈도 가중치 P7 과 별개). 스키마는 선택 필드로 받되 `examples/sample-cert` 에서는 제거 | 첫 소비자가 생길 때(S4 채점 집계). 정의하거나 §8.1 예시에서 삭제 |
 
 ---
 
