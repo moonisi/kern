@@ -1,0 +1,16 @@
+{
+  "description": "세션 시작 브리핑 (S0: 침묵 스텁)",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"]
+          }
+        ]
+      }
+    ]
+  }
+}
