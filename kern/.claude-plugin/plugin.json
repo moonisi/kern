@@ -1,0 +1,7 @@
+{
+  "name": "kern",
+  "version": "0.0.1",
+  "description": "시험 불가지론적 학습 플러그인: 시험 프로파일·문제은행·모의고사·FSRS 복습·약점 지도·튜터 모드를 로컬 마크다운 vault 에 구축한다.",
+  "author": { "name": "moonisica" },
+  "license": "MIT"
+}
