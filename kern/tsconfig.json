@@ -9,5 +9,5 @@
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["scripts"]
+  "include": ["scripts", "evals"]
 }
