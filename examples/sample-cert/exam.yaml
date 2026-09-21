@@ -1,13 +1,14 @@
-# 자작 샘플 시험 프로파일 (초안). 실제 시험이 아니며, 실제 시험의 이름·출제기준·기출을 포함하지 않는다.
+# 자작 샘플 시험 프로파일. 실제 시험이 아니며, 실제 시험의 이름·출제기준·기출을 포함하지 않는다.
 # 구조 출처: docs/prd.md §8.1. 2차 논술 stage 는 제외 (논술은 S7 의 examples/sample-essay).
-# 스키마 검증(zod)은 S1 에서 추가된다. 이 파일은 S0 초안이다.
+# 값 출처: criteria/2026_criteria.md (자작 원문). init-exam 실행 결과의 기대값으로 쓴다.
+# youtube·locale 은 원문에 없는 기본값이다. `kern validate-exam` 과 scripts/test/sample-cert.test.ts 로 검증한다.
 schema_version: 1
 exam:
   name: "샘플 자격시험"
   code: "sample-cert"
   criteria_version: "2026"
-  criteria_source: "criteria/2026_criteria.pdf"   # 원문은 S1 산출물. 현재 파일 없음
-  verified: false                                  # 원문이 없으므로 false. S1 에서 원문 확인 후 true
+  criteria_source: "criteria/2026_criteria.md"
+  verified: true                        # 원문 파일이 있고 아래 값을 원문과 대조함
 stages:
   - id: "1st"
     name: "1차 필기"
@@ -22,7 +23,6 @@ stages:
         items: 20
         handler: "mcq"
         choices: 4
-        weight: 1.0
       - id: "s2"
         name: "과목 B"
         items: 20
