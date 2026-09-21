@@ -134,7 +134,7 @@ claude plugin eval ./kern             # evals 실행 (v2.1.269+)
 | `ts-fsrs` 최신 안정 버전 | 🔴 미확인 | S5 착수 시 `npm view ts-fsrs version` |
 | Node 순수 PDF 렌더 라이브러리 선택 | 🔴 미정 | S2 착수 시 후보 비교, 라이선스 확인 |
 | `claude plugin eval` 사용 가능 여부 | 🔵 사용 가능 (2026-09-21, 앱 번들 `claude.exe` 2.1.275 의 `plugin --help` 출력에 `eval`·`validate`·`details` 확인). 케이스 형식은 help 기준 `case.yaml` 또는 `prompt.md + graders/*.md`, 상세 스키마는 🔴 | T7 에서 `claude plugin eval --help`·공식 문서 확인 |
-| 앱 세션에서 로컬 플러그인 수동 로드(`--plugin-dir`) 방법 | 🔴 미확인 | T2 에서 번들 `claude.exe --plugin-dir ./kern` 을 터미널에서 실행해 확인 |
+| 앱 세션에서 로컬 플러그인 수동 로드(`--plugin-dir`) 방법 | 🔵 CLI 로드 확인 (2026-09-21, 번들 `claude.exe` 2.1.275 `--plugin-dir ./kern plugin details kern` 출력에 `kern 0.0.1`, `Source: kern@inline`). 인터랙티브·앱 세션 로드는 🔴 미실행 | 인터랙티브는 터미널에서 `claude.exe --plugin-dir ./kern` 실행 후 `/plugin` 으로 확인 |
 | Agent SDK 과금·약관(풀 GUI 검토용) | 🟡 | S8 이후, 착수 전 문서 확인 |
 
 새 항목이 생기면 이 표에 추가하고, 확인되면 상태를 `🔵` 로 바꾸고 출처를 적는다.
