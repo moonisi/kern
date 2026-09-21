@@ -63,8 +63,8 @@ gantt
 **산출물**
 - `kern/.claude-plugin/plugin.json` (name, version, description, license MIT)
 - `kern/skills/` 빈 디렉토리 + 라우터 `skills/kern/SKILL.md` 스텁
-- `kern/scripts/` TypeScript 프로젝트: `package.json`(Node ≥ 20, `"type": "module"`), `tsconfig.json`, 테스트 러너(Node 내장 `node:test` 우선, 부족하면 vitest), `package-lock.json` 필수(플러그인 캐시 설치가 npm lockfile 을 요구)
-- `kern/bin/kern` — `scripts/dist/cli.js` 진입점
+- `kern/scripts/` TypeScript 소스(`src/`, `test/`). `package.json`(Node ≥ 22.18, `"type": "module"`)·`tsconfig.json`(타입 검사 전용)·`package-lock.json` 은 **플러그인 루트 `kern/`** 에 둔다(결정 0001). 빌드·`dist` 없음, 테스트 러너(Node 내장 `node:test` 우선, 부족하면 vitest), `package-lock.json` 필수(플러그인 캐시 설치가 npm lockfile 을 요구)
+- `kern/bin/kern` — `scripts/src/cli.ts` 진입점
 - `kern/hooks/hooks.json` — SessionStart 스텁(침묵)
 - `kern/evals/` — 케이스 1개(플러그인 로드 확인)
 - `examples/sample-cert/` — 자작 시험 프로파일 초안(과목 2, 문항 40, 과락/평균)
@@ -78,8 +78,8 @@ gantt
 
 **개발 환경 (확정: Windows 11)**
 - Git for Windows 설치, Claude Code 는 Git Bash 에서 실행. 🟡 v2.1.120+ PowerShell 폴백은 공식 문서 미반영이라 의존하지 않음.
-- `bin/kern` (bash shim) + `bin/kern.cmd` (Windows shim) 둘 다 제공, 실제 로직은 `node scripts/dist/cli.js`.
-- 훅 커맨드는 `node "${CLAUDE_PLUGIN_ROOT}/scripts/dist/brief.js"` 형태로만 작성. `.sh` 훅 금지.
+- `bin/kern` (bash shim) + `bin/kern.cmd` (Windows shim) 둘 다 제공, 실제 로직은 `node scripts/src/cli.ts`.
+- 훅 커맨드는 `node "${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"` 형태로만 작성. `.sh` 훅 금지.
 - 플러그인 컴포넌트 경로는 항상 `/` 사용(백슬래시 경로는 Windows 에서만 로드됨).
 - `.gitattributes` 로 `* text=auto eol=lf` 고정, `.editorconfig` 추가.
 - S0 DoD 에 "Git Bash 와 PowerShell 양쪽에서 `kern --version` 동작" 추가.

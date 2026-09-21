@@ -12,9 +12,9 @@
 |---|---|---|---|
 | F1 | `node`, `npm`, `claude` 가 Git Bash·PowerShell 양쪽 PATH 에 없음. `C:\Program Files\nodejs`, nvm, fnm, Volta 경로도 없음 | 🔵 2026-09-21 실행 확인 (`command not found` / `없음`) → **해소**: 🔵 2026-09-21 재확인, 양쪽 셸에서 `node` v24.19.0 / `npm` 11.17.0 출력 (앱 세션 도구 셸 기준). `claude` 는 여전히 PATH 에 없음(D5) | ~~T0 선행 필수. Node 만 사용자가 설치.~~ T0 완료. `claude` 는 앱 번들 `$APPDATA/Claude/claude-code/2.1.275/claude.exe` 사용(🔵 `--version`·`plugin --help` 실행 확인, D5) |
 | F2 | `.gitignore`, `.gitattributes`, `CLAUDE.md` 는 이미 존재하고 S0 요구를 충족 | 🔵 파일 읽음 | 해당 산출물은 T1 에서 제외 |
-| F3 | `dist/` 가 gitignore 인데 `bin/kern`·훅이 `scripts/dist/*.js` 를 호출 → git 으로 설치한 플러그인에는 `dist` 가 없음 | 🔵 구조상 사실 / 해결책 🔴 | S0 은 `--plugin-dir` 로컬 빌드 전제로 진행. 배포 방식은 T9 에서 `docs/decisions/` 에 미결로 기록 |
+| F3 | `dist/` 가 gitignore 인데 `bin/kern`·훅이 `scripts/dist/*.js` 를 호출 → git 으로 설치한 플러그인에는 `dist` 가 없음 | 🔵 구조상 사실 → **해소(D6)**: `dist` 를 없애고 `.ts` 직접 실행 | 결정 `docs/decisions/0001-dist-distribution.md`. 캐시 설치본에서의 실제 동작은 🔴 → T4 직후 검증 |
 | F4 | `plugin.json` 필드, `hooks.json` 스키마, `evals/` 케이스 상세 형식 (`claude plugin eval` 자체는 🔵 사용 가능, help 상 `case.yaml` 또는 `prompt.md + graders/*.md`) | 🔴 기억으로 작성 금지 (CLAUDE.md §0-4) | 각 task 첫 단계에서 공식 문서·`--help` 확인 후 출처를 커밋 본문에 기록 |
-| F5 | TS 를 `node:test` 로 돌리는 방법 (빌드 후 `node --test dist/` vs type stripping) | 🟡 | T3 에서 설치된 Node 버전 기준으로 결정. 기본안: `tsc` 빌드 후 `node --test` (추가 의존성 0) |
+| F5 | TS 를 `node:test` 로 돌리는 방법 (빌드 후 `node --test dist/` vs type stripping) | 🔵 D6 로 결정: type stripping. `node --test` 가 `.ts` 테스트 파일을 찾는 glob·옵션은 🟡 T3 에서 `node --help`·공식 문서로 확인 | T3 |
 | F6 | "`skills/` 빈 디렉토리" 는 git 이 추적하지 못함 | 🔵 | 라우터 스텁(T5)이 들어가므로 별도 조치 불필요 |
 | F7 | PRD §8.1 예시 `exam.yaml` 에는 `2nd` 논술 stage 가 있으나 `sample-cert` 는 객관식+단답만 | 🔵 PRD §10 | T8 초안에서 `2nd` stage 제외 (논술은 S7 `sample-essay`) |
 | F8 | `typescript`, `@types/node` devDependency 추가 필요 | 🟡 | T3 에서 `npm view` 출력 인용 + 사용자 승인 후 설치 |
@@ -27,6 +27,7 @@
 | D2 | `dist` 배포 방식(F3)은 **S0 안에서 조사 후 결정** | T1b 신설, T9 의 미결 기록 항목 대체 |
 | D3 | `claude plugin eval` 불가 시 T7 **보류 + S0 조건부 완료**, S1 진행 | T7, T9 |
 | D4 | task 는 묶지 않고 유지, 계획서 즉시 커밋 | — |
+| D6 | (2026-09-21) `dist` 배포 방식 = **(d) 빌드 없이 실행**(Node type stripping). Node 하한 **≥ 22.18**. `package.json`·`package-lock.json`·`tsconfig.json` 은 **`kern/` 루트**, 소스는 `kern/scripts/src/` | T3·T4·T6·T9, CLAUDE.md §2·§3·§7, roadmap S0, README, prd §6·§9 |
 | D5 | Claude Code CLI 는 **별도 설치하지 않음**. 앱 번들 `claude.exe` 를 절대경로로 호출(PATH 에 없음, 앱 업데이트 시 버전 폴더 변경) | T0, 모든 `claude ...` 검증 명령 |
 
 **`claude` 호출 방법 (이하 모든 task 의 `claude ...` 는 이 방식으로 실행)**
@@ -104,7 +105,7 @@ S0-T1: docs/plans/s0-plan.md 의 T1 을 수행해줘. README 는 prd.md §1 과 
 - [x] 공식 플러그인 문서에서 설치 시 동작 확인: 의존성 설치·빌드 단계 유무, lockfile 요구(roadmap S0 의 "플러그인 캐시 설치가 npm lockfile 을 요구" 🟡 주장 검증), URL 기록 → 🔵 lockfile 요구 맞음(단 플러그인 **루트** 기준), 빌드 단계 없음(`npm ci --ignore-scripts`)
 - [x] 후보 비교: (a) 설치 시 빌드 (b) `dist` 커밋 — CLAUDE.md §3 커밋 금지 목록 수정 필요 (c) 릴리스 브랜치/태그에만 `dist` 포함 (d) 빌드 없이 실행 가능한 형태
 - [x] 추천안 1개 + 근거를 `docs/decisions/0001-dist-distribution.md` 에 기록, 문서로 확인 안 된 부분은 🔴 유지 → 추천 (d), `package.json` 위치 문제 별도 제기
-- [ ] 사용자 승인 후 확정. CLAUDE.md·`.gitignore` 수정이 필요하면 별도 커밋
+- [x] 사용자 승인 후 확정. CLAUDE.md·`.gitignore` 수정이 필요하면 별도 커밋 → 2026-09-21 승인(D6). `.gitignore` 변경 없음
 
 **추천 프롬프트**
 ```text
@@ -140,43 +141,44 @@ S0-T2: plugin.json 을 만들어줘. 먼저 공식 문서로 manifest 스키마�
 
 ---
 
-## T3 — `kern/scripts/` TypeScript 프로젝트 + 더미 테스트
+## T3 — `kern/` TypeScript 프로젝트(소스 `kern/scripts/`) + 더미 테스트
 
 **체크리스트**
 - [ ] `npm view typescript version license`, `npm view @types/node version license` 출력 인용 → **사용자 승인** 후 설치
-- [ ] `package.json`: `"type": "module"`, `"engines": {"node": ">=20"}`, scripts `build`/`test`
-- [ ] `tsconfig.json`: strict, ESM(NodeNext), `outDir: dist`, `rootDir` 에 `src`·`test` 포함 방식 결정(F5)
-- [ ] `src/version.ts` — `package.json` 의 version 을 읽는 순수 함수(첫 줄 한국어 역할 주석)
-- [ ] `test/version.test.ts` — 더미 1건 (`node:test` + `node:assert`)
-- [ ] `package-lock.json` 생성·커밋, `node_modules/`·`dist/` 미추적 확인
+- [ ] `kern/package.json`: `"type": "module"`, `"engines": {"node": ">=22.18"}`, scripts `typecheck`/`test` (`build` 없음, D6)
+- [ ] `kern/tsconfig.json`: strict, ESM, **emit 없음(타입 검사 전용)**. type stripping 제약 문법을 막는 옵션은 공식 문서(TypeScript·Node)로 확인 후 적용, URL 기록 🔴→🔵
+- [ ] `scripts/src/version.ts` — `package.json` 의 version 을 읽는 순수 함수(첫 줄 한국어 역할 주석)
+- [ ] `scripts/test/version.test.ts` — 더미 1건 (`node:test` + `node:assert`)
+- [ ] `kern/package-lock.json` 생성·커밋, `node_modules/` 미추적 확인
 - [ ] `npm test` 출력 인용
 
 **추천 프롬프트**
 ```text
-S0-T3: kern/scripts 에 TS strict ESM 프로젝트를 만들어줘. 의존성은 typescript, @types/node 만.
-설치 전에 npm view 로 version·license 를 보여주고 내 승인을 기다려. 테스트는 node:test,
-실행 방식은 "tsc 빌드 후 node --test" 를 기본으로 하되 더 단순한 방법이 있으면 근거와 함께 제안해.
+S0-T3: kern/ 루트에 package.json·tsconfig.json, kern/scripts/src·test 에 소스를 두는 TS strict ESM 프로젝트를 만들어줘.
+의존성은 typescript, @types/node 만. 설치 전에 npm view 로 version·license 를 보여주고 내 승인을 기다려.
+빌드 없이 type stripping 으로 실행하고(결정 0001), 테스트는 node:test, tsc 는 타입 검사만.
 ```
 
 **검증**
 ```bash
-cd kern/scripts && npm ci && npm run build && npm test
-git status --short   # node_modules, dist 가 나오면 실패
+cd kern && npm ci && npm run typecheck && npm test
+git status --short   # node_modules 가 나오면 실패
 ```
 
-**커밋**: `chore(scripts): TypeScript 프로젝트·node:test 구성` (본문에 `npm view` 출력)
+**커밋**: `chore(plugin): TypeScript 프로젝트·node:test 구성` (본문에 `npm view` 출력)
 
 ---
 
 ## T4 — CLI `kern --version` + `bin/kern`, `bin/kern.cmd`
 
 **체크리스트**
-- [ ] `src/cli.ts`: `--version` → 버전 출력 후 exit 0. 알 수 없는 인자 → 한국어 에러 + exit 1 (조용한 실패 금지)
+- [ ] `scripts/src/cli.ts`: `--version` → 버전 출력 후 exit 0. 알 수 없는 인자 → 한국어 에러 + exit 1 (조용한 실패 금지)
 - [ ] 인자 파싱은 순수 함수로 분리하고 단위 테스트 (`--version`, 인자 없음, 미지 인자)
 - [ ] `bin/kern`: `node` 호출 한 줄 (shebang + exec). `bin/kern.cmd`: `node` 호출 한 줄
 - [ ] `bin/kern` 실행 비트: `git update-index --chmod=+x` 필요 여부 확인
 - [ ] Git Bash: `./kern/bin/kern --version` / PowerShell: `.\kern\bin\kern.cmd --version` 출력 인용
 - [ ] 공백 포함 경로에서도 동작하는지 1회 확인(따옴표 처리)
+- [ ] **결정 0001 의 🔴 검증**: 로컬 마켓플레이스로 설치해 캐시 복사본에서 `kern --version` 이 `.ts` 직접 실행으로 동작하는지 확인. 실패 시 출력 인용 후 (b) `dist` 커밋으로 되돌릴지 사용자에게 질문
 
 **추천 프롬프트**
 ```text
@@ -215,18 +217,18 @@ CLAUDE.md §6 규칙(한국어 트리거, 확인 후 실행, 런타임 §0 규�
 
 **체크리스트**
 - [ ] 공식 hooks 문서에서 플러그인 `hooks.json` 스키마·`${CLAUDE_PLUGIN_ROOT}` 확인(URL 기록)
-- [ ] `src/brief.ts`: S0 에서는 아무것도 출력하지 않고 exit 0. "vault 판정은 S5" 주석
-- [ ] 훅 커맨드: `node "${CLAUDE_PLUGIN_ROOT}/scripts/dist/brief.js"` 형태. `.sh` 금지
+- [ ] `scripts/src/brief.ts`: S0 에서는 아무것도 출력하지 않고 exit 0. "vault 판정은 S5" 주석
+- [ ] 훅 커맨드: `node "${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"` 형태. `.sh` 금지
 - [ ] 단위 테스트: brief 실행 시 stdout 빈 문자열
 - [ ] validate 출력 + 실제 세션 시작 시 출력·오류 없음 확인
 
 **추천 프롬프트**
 ```text
-S0-T6: SessionStart 훅 스텁을 추가해줘. brief.js 는 침묵(출력 0, exit 0)만 한다.
+S0-T6: SessionStart 훅 스텁을 추가해줘. brief.ts 는 침묵(출력 0, exit 0)만 한다.
 hooks.json 스키마는 공식 문서로 확인하고, Windows 에서 경로 따옴표가 깨지지 않는지 실제 세션으로 확인해.
 ```
 
-**검증**: `node kern/scripts/dist/brief.js | wc -c` → `0`, `echo $?` → `0`. `claude --plugin-dir ./kern` 시작 시 훅 오류 없음.
+**검증**: `node kern/scripts/src/brief.ts | wc -c` → `0`, `echo $?` → `0`. `claude --plugin-dir ./kern` 시작 시 훅 오류 없음.
 
 **커밋**: `feat(hooks): SessionStart 침묵 스텁 추가`
 
@@ -285,7 +287,7 @@ PRD §8.1 을 따르되 2차 논술 stage 는 빼. 실제 시험을 연상시키
 
 **DoD 검증 명령**
 ```bash
-cd kern/scripts && npm ci && npm run build && npm test
+cd kern && npm ci && npm run typecheck && npm test
 claude plugin validate ./kern --strict
 claude plugin details kern
 claude plugin eval ./kern
@@ -308,9 +310,9 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 
 ## 2. 전체 진행 체크
 
-- [ ] T0 환경
-- [ ] T1 README·editorconfig
-- [ ] T1b dist 배포 방식 결정
+- [x] T0 환경
+- [x] T1 README·editorconfig
+- [x] T1b dist 배포 방식 결정
 - [ ] T2 plugin.json
 - [ ] T3 scripts TS 프로젝트
 - [ ] T4 CLI·shim

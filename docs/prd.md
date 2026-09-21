@@ -86,7 +86,7 @@ kern은 "시험은 데이터, 문항 유형은 코드"라는 원칙으로 이 �
      │                                 ├── skills/        슬래시 커맨드 (SKILL.md)
      │                                 ├── agents/        서브에이전트 (생성기·검증기·채점 해설기)
      │                                 ├── hooks/         SessionStart: 복습 큐 브리핑
-     │                                 ├── scripts/       TypeScript (Node ≥ 20): 결정적 로직
+     │                                 ├── scripts/       TypeScript (Node ≥ 22.18): 결정적 로직
      │                                 └── bin/kern      CLI (스크립트 진입점)
      │
      └── 작업 디렉토리 ──▶  <exam>-vault/ (데이터, git 제외 또는 private)
@@ -406,7 +406,7 @@ export interface GradeResult {
 | 항목 | 요구 |
 |---|---|
 | 언어 | 사용자 대면 텍스트 한국어. 키·ID·커맨드·경로 영문 |
-| 런타임 | Node ≥ 20 단일 런타임(TypeScript). Python 의존 없음. `kern serve` 는 Node 내장 `http` 만 사용. 경로 ① 사용 시에만 `yt-dlp` 외부 바이너리 |
+| 런타임 | Node ≥ 22.18 단일 런타임(TypeScript, 빌드 없이 type stripping 실행). Python 의존 없음. `kern serve` 는 Node 내장 `http` 만 사용. 경로 ① 사용 시에만 `yt-dlp` 외부 바이너리 |
 | 결정성 | 채점·FSRS·집계는 동일 입력에 동일 출력. 스크립트 단위 테스트 필수 |
 | 비용 | LLM 호출은 생성·검증·해설·루브릭에 한정. 채점·통계에는 LLM 미사용 |
 | 프라이버시 | 학습 데이터는 vault 밖으로 나가지 않음(Claude 세션 경유 제외). 텔레메트리 없음 |

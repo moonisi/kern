@@ -25,17 +25,17 @@ MVP 는 S0~S5.
 ## 요구 환경
 
 - Windows 11 + Git for Windows (Claude Code 는 Git Bash 에서 실행)
-- Node ≥ 20, npm
+- Node ≥ 22.18, npm (빌드 없이 `.ts` 를 type stripping 으로 직접 실행)
 - Claude Code (개발 세션은 데스크톱 앱 번들 `claude.exe` 사용, [CLAUDE.md](CLAUDE.md) §2)
 
 다른 OS 에서의 동작은 확인하지 않았다.
 
 ## 개발 명령
 
-아래 명령의 대상(`kern/scripts` 의 TS 프로젝트, `plugin.json`, evals)은 S0 에서 추가될 예정이며 아직 없다.
+아래 명령의 대상(`kern/` 의 TS 프로젝트, `plugin.json`, evals)은 S0 에서 추가될 예정이며 아직 없다.
 
 ```bash
-cd kern/scripts && npm test
+cd kern && npm test
 claude plugin validate ./kern --strict
 claude --plugin-dir ./kern
 claude plugin details kern
