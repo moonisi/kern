@@ -237,10 +237,11 @@ hooks.json 스키마는 공식 문서로 확인하고, Windows 에서 경로 따
 ## T7 — `evals/` 케이스 1건 (플러그인 로드 확인)
 
 **체크리스트**
-- [ ] T0 에서 `claude plugin eval` 가용 여부 확인 결과 참조
-- [ ] 가용: 공식 문서로 케이스 형식 확인 → 로드 확인 케이스 1건 → 실행 출력 인용
-- [ ] 불가: 형식을 추측해 만들지 않는다. `evals/README.md` 에 "형식 미확인, 보류" 기록 + CLAUDE.md §8 갱신 후 **미완료로 보고**
-- [ ] always-on 토큰 증가 여부 확인
+- [x] T0 에서 `claude plugin eval` 가용 여부 확인 결과 참조 — 🔵 가용 (2.1.275)
+- [x] 가용: 공식 문서로 케이스 형식 확인 → 로드 확인 케이스 1건 → 실행 출력 인용 — 🔵 형식 출처: `claude plugin eval --help`, `claude plugin eval init --bare`(공식 템플릿 생성), https://code.claude.com/docs/en/plugin-evals . `evals/plugin-load/`: `prompt.md`(자연어 트리거, `runs: 1`, `model: haiku`) + 결정적 grader 2개(`tool_used: Skill`, 고정 문장 `regex`). LLM judge 미사용. 실행(`--trust-plugin --no-publish`): `with 1.00  without 0.00  Δ +1.00`, `Skill called 1x`, exit 0, $0.04
+- [x] ~~불가: 형식을 추측해 만들지 않는다.~~ 해당 없음(가용)
+- [x] always-on 토큰 증가 여부 확인 — 🔵 `~141 tok`, T6 시점과 동일(evals 는 증가 없음). T5 기록(~34)과의 차이 원인은 🔴 미확인
+- [x] `kern/evals/results/` 를 `.gitignore` 에 추가 (공식 문서 권장)
 
 **추천 프롬프트**
 ```text
@@ -319,7 +320,7 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T4 CLI·shim (캐시 복사본 검증은 T9 로 이관)
 - [x] T5 라우터 스텁 (인터랙티브 `/` 메뉴 확인만 미실행)
 - [x] T6 훅 스텁
-- [ ] T7 evals 1건
+- [x] T7 evals 1건
 - [ ] T8 sample-cert 초안
 - [ ] T9 종합 검증
 

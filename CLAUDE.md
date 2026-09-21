@@ -133,7 +133,7 @@ claude plugin eval ./kern             # evals 실행 (v2.1.269+)
 | Claude Code Windows PowerShell 폴백(v2.1.120+) | 🟡 문서 미반영 | 공식 setup 문서 재확인. 그 전까지 Git Bash 전제 |
 | `ts-fsrs` 최신 안정 버전 | 🔴 미확인 | S5 착수 시 `npm view ts-fsrs version` |
 | Node 순수 PDF 렌더 라이브러리 선택 | 🔴 미정 | S2 착수 시 후보 비교, 라이선스 확인 |
-| `claude plugin eval` 사용 가능 여부 | 🔵 사용 가능 (2026-09-21, 앱 번들 `claude.exe` 2.1.275 의 `plugin --help` 출력에 `eval`·`validate`·`details` 확인). 케이스 형식은 help 기준 `case.yaml` 또는 `prompt.md + graders/*.md`, 상세 스키마는 🔴 | T7 에서 `claude plugin eval --help`·공식 문서 확인 |
+| `claude plugin eval` 사용 가능 여부 | 🔵 사용 가능 (2026-09-21, 앱 번들 `claude.exe` 2.1.275 의 `plugin --help` 출력에 `eval`·`validate`·`details` 확인). 케이스 형식 🔵 (2026-09-21, S0-T7): `prompt.md`(frontmatter + 자연어 프롬프트) + `graders/*.md`. grader type 은 결정적 `regex`·`tool_used`·`tool_order`·`file_exists`, judge 호출 `llm`·`baseline`. 기본 ablation(with-without)에서 `tool_used: Skill` 은 점수 미반영 지표. `evals/plugin-load` 실행 통과 확인 | 출처: `claude plugin eval --help`, `init --bare` 템플릿, https://code.claude.com/docs/en/plugin-evals . 실행은 `claude plugin eval ./kern --trust-plugin --no-publish` |
 | 앱 세션에서 로컬 플러그인 수동 로드(`--plugin-dir`) 방법 | 🔵 CLI 로드 확인 (2026-09-21, 번들 `claude.exe` 2.1.275 `--plugin-dir ./kern plugin details kern` 출력에 `kern 0.0.1`, `Source: kern@inline`). 인터랙티브·앱 세션 로드는 🔴 미실행 | 인터랙티브는 터미널에서 `claude.exe --plugin-dir ./kern` 실행 후 `/plugin` 으로 확인 |
 | Agent SDK 과금·약관(풀 GUI 검토용) | 🟡 | S8 이후, 착수 전 문서 확인 |
 
