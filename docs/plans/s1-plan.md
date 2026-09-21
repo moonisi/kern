@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0~T6 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0~T7 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -187,7 +187,7 @@ S1-T4: scripts/src/id.ts 에 문항 ID 생성 순수 함수를 만들어줘. 형
 - [x] 동작: 통과 → `통과` + UNSUPPORTED 경고 목록, exit 0 / 스키마 오류 → 필드 경로 포함 한국어 메시지, exit 1 / 파일 없음 → exit 1
 - [x] **F6 가드**: `verified: true` 인데 `criteria_source`(exam.yaml 기준 상대경로) 파일이 없으면 오류
 - [x] 테스트: 임시 디렉토리 픽스처로 4 경로 + 실제 프로세스 실행 1건(`brief.test.ts` 방식 참고)
-- [x] Git Bash `./kern/bin/kern validate-exam examples/sample-cert/exam.yaml`, PowerShell `.\kern\bin\kern.cmd ...` 출력 인용 — 🔵 main 에서 두 셸 모두 `통과` / exit 0, 없는 파일은 exit 1. `npm test` pass 68 / fail 0. 가드는 `existsSync` 라 디렉토리도 통과함(🟡 T7 이후 재검토)
+- [x] Git Bash `./kern/bin/kern validate-exam examples/sample-cert/exam.yaml`, PowerShell `.\kern\bin\kern.cmd ...` 출력 인용 — 🔵 main 에서 두 셸 모두 `통과` / exit 0, 없는 파일은 exit 1. `npm test` pass 68 / fail 0. 가드는 T7 에서 `isFile()` 로 조임(`f150f25`)
 
 **추천 프롬프트**
 ```text
@@ -226,12 +226,12 @@ taxonomy.md 스켈레톤(빈 트리 + 수동 편집 안내)은 순수 함수로 
 ## T7 — `examples/sample-cert/` 원문·기대값
 
 **체크리스트**
-- [ ] `criteria/2026_criteria.md`(Q1): 자작 출제기준 — 시험 개요, 과목 2개·문항수·시간·배점·합격기준, 과목별 단원 → 소단원 트리(과목당 3~4단원 🟡). **실제 시험·법령·교재를 연상시키는 내용 금지**, 파일 상단에 "자작" 명시
-- [ ] `exam.yaml`: `criteria_source` → `criteria/2026_criteria.md`, `verified: true`, 상단 주석 갱신. 원문의 수치와 1:1 대응(문항수·시간·과락·평균)
-- [ ] `taxonomy.md`: 원문 트리와 일치, 각 노드 `[[과목/단원/소단원]]` 백링크(PRD §8.2 형식)
-- [ ] `README.md` "현재 상태" 갱신(없는 것을 있다고 쓰지 않음: 문항 40개는 여전히 없음)
-- [ ] 테스트: `examples/sample-cert/exam.yaml` 이 `parseExam` 통과 + `validate-exam` exit 0(원문 파일 존재 가드 포함) — 기대값이 스키마와 어긋나면 CI 에서 드러남
-- [ ] 원문 ↔ `exam.yaml` 수치 대조표를 커밋 본문에
+- [x] `criteria/2026_criteria.md`(Q1): 자작 출제기준 — 시험 개요, 과목 2개·문항수·시간·배점·합격기준, 과목별 단원 → 소단원 트리(과목당 3~4단원 🟡). **실제 시험·법령·교재를 연상시키는 내용 금지**, 파일 상단에 "자작" 명시
+- [x] `exam.yaml`: `criteria_source` → `criteria/2026_criteria.md`, `verified: true`, 상단 주석 갱신. 원문의 수치와 1:1 대응(문항수·시간·과락·평균) — 🔵 원문에 근거가 없던 `s1.weight` 는 제거(선택 필드)
+- [x] `taxonomy.md`: 원문 트리와 일치, 각 노드 `[[과목/단원/소단원]]` 백링크(PRD §8.2 형식) — 🔵 과목 2 · 단원 6(과목당 3) · 소단원 14. 단원 번호는 과목을 넘어 1~6 으로 유일
+- [x] `README.md` "현재 상태" 갱신(없는 것을 있다고 쓰지 않음: 문항 40개는 여전히 없음)
+- [x] 테스트: `examples/sample-cert/exam.yaml` 이 `parseExam` 통과 + `validate-exam` exit 0(원문 파일 존재 가드 포함) — 기대값이 스키마와 어긋나면 CI 에서 드러남 — 🔵 `sample-cert.test.ts` 4건, `npm test` pass 83 / fail 0. 두 셸 `validate-exam` → `통과` exit 0. F6 가드는 `isFile()` 로 수정(`f150f25`)
+- [x] 원문 ↔ `exam.yaml` 수치 대조표를 커밋 본문에
 
 **추천 프롬프트**
 ```text
@@ -339,7 +339,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T4 문항 ID
 - [x] T5 validate-exam
 - [x] T6 init-vault
-- [ ] T7 sample-cert 원문·기대값
+- [x] T7 sample-cert 원문·기대값
 - [ ] T8 init-exam 스킬·에이전트
 - [ ] T9 evals·라우터 스텁
 - [ ] T10 종합 검증
