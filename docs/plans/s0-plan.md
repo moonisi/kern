@@ -279,13 +279,13 @@ PRD §8.1 을 따르되 2차 논술 stage 는 빼. 실제 시험을 연상시키
 ## T9 — S0 종합 검증·실측 기록
 
 **체크리스트**
-- [ ] 아래 DoD 명령 전부 실행, 출력 인용
-- [ ] `claude plugin details kern` always-on 토큰 값을 `docs/decisions/` 또는 roadmap 에 기록(기준선)
-- [ ] T1b 결정이 bin·훅 경로에 실제 반영됐는지 확인
-- [ ] **결정 0001 사실 12 🔴 검증 (T4 에서 이관)**: 캐시 복사가 일어나는 source(🟡 git 계열 `github`/`url`, 원격 push·`marketplace.json`·`~/.claude` 등록 필요 — 각각 사용자 승인)로 설치해 캐시 복사본에서 `kern --version` 이 `.ts` 직접 실행으로 동작하는지 확인. 실패 시 출력 인용 후 (b) `dist` 커밋으로 되돌릴지 사용자에게 질문
-- [ ] T7 이 보류면 S0 을 "조건부 완료(evals 보류)"로 보고(D3)
-- [ ] roadmap S0 세션 수를 실측치로 갱신, CLAUDE.md §8 표 상태 갱신
-- [ ] 미완료 항목이 있으면 숨기지 말고 S0 "부분 완료"로 보고
+- [x] 아래 DoD 명령 전부 실행, 출력 인용 — 🔵 전부 통과 (결과는 `docs/roadmap.md` S0 "실측"). `plugin eval` 은 `--trust-plugin --no-publish` 로 실행(리포트 claude.ai 게시 생략)
+- [x] `claude plugin details kern` always-on 토큰 값을 `docs/decisions/` 또는 roadmap 에 기록(기준선) — 🔵 ~141 tok, roadmap S0 에 기록
+- [x] T1b 결정이 bin·훅 경로에 실제 반영됐는지 확인 — 🔵 `bin/kern`·`bin/kern.cmd` → `scripts/src/cli.ts`, `hooks.json` → `scripts/src/brief.ts`. `dist` 참조 없음
+- [x] **결정 0001 사실 12 검증 (T4 에서 이관)** — 🔵 통과. 원격 `https://github.com/moonisi/kern.git` 에 `5cb56a1` 이 이미 있어 push 없이, scratchpad 임시 마켓플레이스의 `git-subdir` source 로 설치 → 캐시 복사본에서 `kern --version` = `0.0.1`(sh·cmd·node). 저장소에 `marketplace.json` 은 추가하지 않음. 검증 후 원복(빈 캐시 디렉토리 `~/.claude/plugins/cache/kern-t9-verify` 는 남아 있음). 상세는 결정 0001 사실 11·12. 원래 항목: 캐시 복사가 일어나는 source(🟡 git 계열 `github`/`url`, 원격 push·`marketplace.json`·`~/.claude` 등록 필요 — 각각 사용자 승인)로 설치해 캐시 복사본에서 `kern --version` 이 `.ts` 직접 실행으로 동작하는지 확인. 실패 시 출력 인용 후 (b) `dist` 커밋으로 되돌릴지 사용자에게 질문
+- [x] T7 이 보류면 S0 을 "조건부 완료(evals 보류)"로 보고(D3) — 해당 없음(T7 완료)
+- [x] roadmap S0 세션 수를 실측치로 갱신, CLAUDE.md §8 표 상태 갱신 — 세션 수는 🔴 기록 없음(커밋 시각 범위만 기록). §8 은 T7 에서 evals 항목 갱신 완료, T9 에서 새로 바뀐 항목 없음
+- [x] 미완료 항목이 있으면 숨기지 말고 S0 "부분 완료"로 보고 — DoD 는 전부 통과. 🔴 미실행: 인터랙티브 세션에서의 로드·`/` 메뉴·훅 확인(헤드리스로만 확인)
 
 **DoD 검증 명령**
 ```bash
@@ -322,7 +322,7 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T6 훅 스텁
 - [x] T7 evals 1건
 - [x] T8 sample-cert 초안
-- [ ] T9 종합 검증
+- [x] T9 종합 검증 (인터랙티브 세션 확인만 미실행)
 
 ## 3. 반대 관점·반례
 

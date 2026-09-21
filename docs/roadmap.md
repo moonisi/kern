@@ -76,10 +76,16 @@ gantt
 - `npm test` 통과(더미 1개), `kern --version` 출력
 - `claude plugin details` 로 always-on 토큰 확인, 기록
 
+**실측 (2026-09-21, S0-T9, claude.exe 2.1.275 / Node v24.19.0)**
+- 🔵 DoD 전부 통과: `npm ci`·`tsc`·`npm test`(pass 7 / fail 0), `validate --strict` 통과, `plugin eval`(plugin-load with 1.00 / without 0.00), `kern --version` = `0.0.1` (Git Bash·PowerShell), 캐시 설치본에서도 동작(결정 0001 사실 12).
+- 🔵 **always-on 토큰 기준선: ~141 tok** (스킬 `kern` ~140, on-invoke ~810. SessionStart 훅은 `harness-only — no model context cost`). 이후 단계에서 증가 시 이 값과 비교해 보고.
+- 세션 수: 🔴 정확한 세션 수는 기록되지 않음. 커밋 기준 2026-09-21 20:42~21:50 KST(약 1.1시간, 커밋 25개 내외) 하루 안에 완료 → 예상 1~2 세션 범위와 🟡 부합.
+- 🔴 미실행으로 남은 것: 인터랙티브 세션에서의 `--plugin-dir` 로드·`/` 메뉴·훅 동작(헤드리스 `-p` 로만 확인).
+
 **개발 환경 (확정: Windows 11)**
 - Git for Windows 설치, Claude Code 는 Git Bash 에서 실행. 🟡 v2.1.120+ PowerShell 폴백은 공식 문서 미반영이라 의존하지 않음.
 - `bin/kern` (bash shim) + `bin/kern.cmd` (Windows shim) 둘 다 제공, 실제 로직은 `node scripts/src/cli.ts`.
-- 훅 커맨드는 `node "${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"` 형태로만 작성. `.sh` 훅 금지.
+- 훅 커맨드는 exec form(`"command": "node"`, `"args": ["${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"]`)으로만 작성(S0-T6, 공식 hooks 문서 권장: 셸 미경유로 경로 따옴표 문제 회피). `.sh` 훅 금지.
 - 플러그인 컴포넌트 경로는 항상 `/` 사용(백슬래시 경로는 Windows 에서만 로드됨).
 - `.gitattributes` 로 `* text=auto eol=lf` 고정, `.editorconfig` 추가.
 - S0 DoD 에 "Git Bash 와 PowerShell 양쪽에서 `kern --version` 동작" 추가.

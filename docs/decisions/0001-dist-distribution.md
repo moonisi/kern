@@ -2,7 +2,7 @@
 
 | 항목 | 내용 |
 |---|---|
-| 상태 | **확정 (2026-09-21 사용자 승인)**: (d) 빌드 없이 실행, Node ≥ 22.18, `package.json` 은 `kern/` 루트. 단 §2 사실 12 🔴 검증 실패 시 (b)로 재검토 |
+| 상태 | **확정 (2026-09-21 사용자 승인)**: (d) 빌드 없이 실행, Node ≥ 22.18, `package.json` 은 `kern/` 루트. §2 사실 12 는 🔵 검증 통과(2026-09-21, S0-T9) → (b) 재검토 불필요 |
 | 작성일 | 2026-09-21 (KST) |
 | 관련 | `docs/plans/s0-plan.md` F3·D2·T1b, `CLAUDE.md` §2·§3 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
@@ -29,8 +29,8 @@
 | 8 | `bin/` 의 실행 파일은 Bash 도구 `PATH` 에 추가된다. claude.ai 조직 설정으로 배포하는 플러그인에는 `bin/` 을 넣을 수 없다 | 🔵 A. Windows 관련 언급은 없음 🔴 |
 | 9 | Node type stripping: v22.18.0/v23.6.0 부터 플래그 없이 기본 활성, v24.12.0/v25.2.0 부터 Stable. `node_modules` 아래의 `.ts` 는 거부. enum·runtime namespace·parameter property·decorator 불가. import 는 `.ts` 확장자 필수, 타입은 `import type`. `tsconfig.json` 무시 | 🔵 C |
 | 10 | 이 PC(Node v24.19.0)에서 `node a.ts` 가 플래그·경고 없이 실행됨 (`ts-ok`, exit 0) | 🔵 2026-09-21 scratchpad 실행 |
-| 11 | `npm ci` 가 devDependencies 를 설치하는지에 대한 플러그인 문서의 언급 | 🔴 문서에 없음 |
-| 12 | 실제 git 설치 → 캐시 복사 → 실행까지의 end-to-end 동작 | 🔴 실행해 보지 않음 |
+| 11 | `npm ci` 가 devDependencies 를 설치하는지에 대한 플러그인 문서의 언급 | 문서에는 없음. 🔵 실측(2026-09-21, S0-T9, claude.exe 2.1.275): 캐시 복사본 `node_modules/` 에 `typescript`·`@types` 가 설치됨 → devDependencies 도 설치된다 |
+| 12 | 실제 git 설치 → 캐시 복사 → 실행까지의 end-to-end 동작 | 🔵 검증 통과 (2026-09-21, S0-T9). 임시 로컬 마켓플레이스 + `git-subdir` source(`https://github.com/moonisi/kern.git`, path `kern`, sha `5cb56a1`) 로 설치 → `~/.claude/plugins/cache/kern-t9-verify/kern/0.0.1/` 에 복사됨 → 복사본에서 `bin/kern --version`(Git Bash)·`bin\kern.cmd --version`(PowerShell)·`node scripts/src/cli.ts --version` 모두 `0.0.1`, `brief.ts` stdout 0바이트. `bin/kern` 실행 비트 유지(`-rwxr-xr-x`). 설치 상태의 `-p` 세션 debug 로그에 캐시 경로의 `hooks.json` 로드·`Registered 1 hooks`·`Loaded 1 skills`, 훅 오류 없음. 검증 후 uninstall·marketplace remove 로 원복 |
 
 ## 3. 후보 비교
 
