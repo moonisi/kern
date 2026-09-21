@@ -342,7 +342,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T6 init-vault
 - [x] T7 sample-cert 원문·기대값
 - [x] T8 init-exam 스킬·에이전트
-- [x] T9 evals·라우터 스텁 (init-exam evals 는 수동 검증으로 대체)
+- [x] T9 evals·라우터 스텁 (init-exam evals 는 수동 검증으로 대체: `npm run eval:manual -- evals/<case>`, `scripts/src/dev/`)
 - [ ] T10 종합 검증
 
 ## 3. 반대 관점·반례

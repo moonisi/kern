@@ -123,7 +123,8 @@ claude plugin eval ./kern --tag smoke --no-publish   # Windows 에서 돌릴 수
                                          # 첫 실행 신뢰 확인으로 막히면 --trust-plugin 추가 (이 저장소 한정)
 # needs-bash 태그 케이스(init-exam-*)는 native Windows 에서 실행 불가(§8). 샌드박스 백엔드가 있는 WSL2/Linux/macOS 에서:
 claude plugin eval ./kern --tag needs-bash --scaffold --allow-tools Write Edit "Bash(node *)" "Bash(cp *)" --no-publish
-# Windows 에서는 같은 fixture(evals/_fixtures/seed-criteria.ts)로 scratchpad vault 를 만들어 PowerShell `claude -p "/kern:init-exam"` 수동 실행 후 grader 정규식을 적용해 확인
+# Windows 에서는 수동 실행 도구로 1건씩 확인(같은 fixture·같은 grader 정의 적용, OS 샌드박스 없음·과금 발생. Git Bash 에서 실행):
+cd kern && npm run eval:manual -- evals/init-exam-with-source
 ```
 
 명령이 실패하면 출력 전체를 인용하고 원인 추정에 `🟡` 를 붙인다. 실패를 우회하기 위해 테스트를 약화하거나 삭제하지 않는다.
