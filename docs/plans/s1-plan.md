@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0~T9 완료(T9 의 init-exam evals 는 Windows 실행 불가 → 수동 검증, 조건부) |
+| 상태 | Q1~Q5 확정(§0.2). T0~T10 완료. **S1 조건부 완료**(init-exam evals 는 Windows 실행 불가 → 수동 검증) |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -301,12 +301,12 @@ S1-T9: init-exam evals 3건(원문 있음·원문 없음·분류 실패)을 추�
 ## T10 — S1 종합 검증·실측 기록
 
 **체크리스트**
-- [ ] 아래 DoD 명령 전부 실행, 출력 인용, 통과/실패 표
-- [ ] roadmap S1 DoD 4항목 각각에 증거 연결(테스트명·eval 케이스·수동 실행 출력)
-- [ ] F2: `node_modules` 없는 복사본에서 `kern validate-exam` 실행 → 에러가 드러나는지 확인(조용한 실패 아님)
-- [ ] `claude plugin details kern` 토큰을 roadmap S1 "실측"에 기록, 세션 수 실측 기록
-- [ ] CLAUDE.md §8 표 갱신(F4·F5·F13 확인 결과), §2 표에 의존성 변화가 있으면 반영
-- [ ] 미완료·🔴 항목은 숨기지 않고 "부분 완료"로 보고
+- [x] 아래 DoD 명령 전부 실행, 출력 인용, 통과/실패 표 — 🔵 전부 통과. 단 `plugin eval` 은 Windows 제약으로 `--tag smoke` 만(결과는 `docs/roadmap.md` S1 "실측")
+- [x] roadmap S1 DoD 4항목 각각에 증거 연결(테스트명·eval 케이스·수동 실행 출력) — roadmap S1 증거 표. UNSUPPORTED 경로도 수동 1회 확인
+- [x] F2: `node_modules` 없는 복사본에서 `kern validate-exam` 실행 → 에러가 드러나는지 확인(조용한 실패 아님) — 🔵 exit 1, `ERR_MODULE_NOT_FOUND: Cannot find package 'yaml'`. `npm ci` 안내 없음(개선 후보, 미수정)
+- [x] `claude plugin details kern` 토큰을 roadmap S1 "실측"에 기록, 세션 수 실측 기록 — ~325 tok. 세션 수는 🔴 기록 없음(커밋 시각만)
+- [x] CLAUDE.md §8 표 갱신(F4·F5·F13 확인 결과), §2 표에 의존성 변화가 있으면 반영 — F4·F5 는 T9 에서 §8 반영, F13 은 T10 에서 추가. §2 는 T9 의 shim 예외 외 변화 없음(`zod`·`yaml` 은 §5 규칙대로 설치, 표 항목 아님)
+- [x] 미완료·🔴 항목은 숨기지 않고 "부분 완료"로 보고 — S1 **조건부 완료**: init-exam evals 하네스 통과 실행 없음(수동 검증으로 대체), 인터랙티브 세션 확인 미실행
 
 **DoD 검증 명령**
 ```bash
@@ -343,7 +343,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T7 sample-cert 원문·기대값
 - [x] T8 init-exam 스킬·에이전트
 - [x] T9 evals·라우터 스텁 (init-exam evals 는 수동 검증으로 대체: `npm run eval:manual -- evals/<case>`, `scripts/src/dev/`)
-- [ ] T10 종합 검증
+- [x] T10 종합 검증 (조건부 완료)
 
 ## 3. 반대 관점·반례
 

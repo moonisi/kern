@@ -108,6 +108,24 @@ gantt
 - 원문 없이 실행 → `exam.yaml` 미작성(필수 값이 모자랄 때) 또는 `verified: false` + 확인 요청 메시지. 빈 값을 지어내 채우지 않는다
 - 분류체계 추출 실패 시 빈 트리 + 수동 편집 안내 (테스트 케이스로 고정)
 
+**실측 (2026-09-21, S1-T10, claude.exe 2.1.275 / Node v24.19.0)** — 판정: **조건부 완료**(init-exam evals 는 하네스 통과 실행 없음)
+- 🔵 공통: `npm ci`·`tsc` exit 0, `npm test` pass 96 / fail 0, `validate --strict` 통과, `kern validate-exam examples/sample-cert/exam.yaml` → `통과` exit 0 (Git Bash `bin/kern`·PowerShell `bin/kern.cmd`), `plugin eval --tag smoke` → plugin-load with 1.00 / without 0.00 / Δ +1.00.
+- DoD 증거:
+
+  | DoD | 상태 | 증거 |
+  |---|---|---|
+  | 스키마 단위 테스트(정상·필드 누락·UNSUPPORTED) | 🔵 | `scripts/test/exam.test.ts`: "정상 입력을 그대로 반환한다", "필수 필드가 없으면 필드 경로를 담은 예외를 던진다", "handler UNSUPPORTED 는 통과하고 unsupportedSubjects 에 나온다" 외 10건 |
+  | 샘플 원문 실행 → 필드 단위 일치, `verified: true` | 🔵 수동 | `npm run eval:manual -- evals/init-exam-with-source` grader 5/5, 생성 `exam.yaml` 이 기대값과 `deepStrictEqual` 일치(3회 실행 모두), `exam-profiler` 위임·`init-vault → validate-exam` 순서 trace 확인 |
+  | 원문 없음 → 미작성 또는 `verified: false` + 확인 요청 | 🔵 수동 | `evals/init-exam-no-source` grader 5/5 (`exam.yaml` 없음, 고정 문구 출력) |
+  | 분류 실패 → 빈 트리 + 수동 편집 안내(테스트로 고정) | 🔵 | 결정적 부분: `scripts/test/init-vault.test.ts` "renderTaxonomySkeleton: … (문자열 고정)". LLM 부분(수동): `evals/init-exam-taxonomy-fail` grader 3/3 |
+  | (DoD 외) UNSUPPORTED 경로 | 🔵 수동 1회 | 과목 B 를 논술형으로 바꾼 임시 원문: 경고 고정 문구·`handler: UNSUPPORTED`·`validate-exam: 통과` 확인. eval 케이스로는 잠그지 않음 |
+
+- 🔴 **init-exam evals 3건(`needs-bash`)은 `claude plugin eval` 하네스로 통과 실행한 적이 없다.** native Windows 는 Bash grant run 을 거부하고 `--scaffold` 도 경로 버그로 실패한다(CLAUDE.md §8). 위 "수동"은 `scripts/src/dev/manual-eval.ts` 가 같은 케이스 파일·grader 정의를 적용한 결과이며 OS 샌드박스·baseline arm 이 없다. `runs: 1` 이라 출력 편차는 미측정.
+- 🔵 **always-on 토큰: ~325 tok** (S0 기준선 ~141 대비 +184): `init-exam` ~110 · `kern` ~130 · `exam-profiler` ~90. 🟡 skills 문서는 `disable-model-invocation` 스킬의 description 이 컨텍스트에 들어가지 않는다고 하므로 `details` 의 ~110 은 과대 추정일 수 있다.
+- 🔵 F2: `node_modules` 없는 복사본에서 `kern validate-exam` → exit 1, `ERR_MODULE_NOT_FOUND: Cannot find package 'yaml'`. 조용한 실패는 아니나 메시지가 Node 원문(영문 스택)이고 `npm ci` 안내가 없다.
+- LLM 실행 비용(수동·eval 합계): 약 $4.5 🟡 (init-exam 1회 $0.30~0.58).
+- 세션 수: 🔴 정확한 세션 수는 기록되지 않음. 커밋 기준 2026-09-21 22:07~23:00 KST + T10(약 1시간, 커밋 25개 내외) → 예상 2~3 세션보다 🟡 짧음.
+
 **리스크**: 스키마 과잉 일반화. S1에서는 `sample-cert` 에 필요한 필드만 넣고, S7에서 v2로 개정한다.
 
 ### S2 — `ingest`·`youtube`
