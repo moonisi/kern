@@ -8,3 +8,6 @@ dist/
 
 # 비밀 정보
 .env
+
+# evals 실행 결과 (공식 문서 권장: https://code.claude.com/docs/en/plugin-evals)
+kern/evals/results/
