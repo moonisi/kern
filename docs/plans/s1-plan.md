@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0 진행 중 |
+| 상태 | Q1~Q5 확정(§0.2). T0 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -74,11 +74,11 @@ git status --short
 ## T0 — 의존성 확인·승인·설치
 
 **체크리스트**
-- [ ] `npm view zod version license`, `npm view yaml version license` 출력 인용 (GPL/AGPL/LGPL 이면 중단)
-- [ ] Q1~Q5 사용자 확정을 이 문서 "0.2 확정된 결정" 절로 기록
-- [ ] **사용자 승인 후** `cd kern && npm install zod yaml` (`dependencies` 에 들어갔는지 확인), 정확한 버전 고정 여부는 기존 `package.json` 스타일(고정 버전)을 따름
-- [ ] type stripping 환경에서 두 패키지 import 가 되는지 scratchpad 한 줄 스크립트로 확인(출력 인용)
-- [ ] `npm ci && npm test` 통과, `git status` 에 `node_modules` 없음
+- [x] `npm view zod version license`, `npm view yaml version license` 출력 인용 (GPL/AGPL/LGPL 이면 중단) — 🔵 2026-09-21 `zod` 4.6.5 MIT / `yaml` 2.9.1 ISC
+- [x] Q1~Q5 사용자 확정을 이 문서 "0.2 확정된 결정" 절로 기록
+- [x] **사용자 승인 후** `cd kern && npm install zod yaml` (`dependencies` 에 들어갔는지 확인), 정확한 버전 고정 여부는 기존 `package.json` 스타일(고정 버전)을 따름 — 🔵 `--save-exact`, `added 2 packages`(전이 의존성 0)
+- [x] type stripping 환경에서 두 패키지 import 가 되는지 scratchpad 한 줄 스크립트로 확인(출력 인용) — 🔵 모듈 해석 때문에 scratchpad 대신 `kern/scripts/` 임시 `.ts` 로 실행: 출력 `{"a":1}`, exit 0, `tsc` exit 0. 임시 파일 삭제
+- [x] `npm ci && npm test` 통과, `git status` 에 `node_modules` 없음 — 🔵 pass 7 / fail 0, `validate --strict` 통과
 
 **추천 프롬프트**
 ```text
@@ -332,7 +332,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 
 ## 2. 전체 진행 체크
 
-- [ ] T0 의존성 승인·설치
+- [x] T0 의존성 승인·설치
 - [ ] T1 exam 스키마
 - [ ] T2 vault 경로·IO
 - [ ] T3 attempts append
