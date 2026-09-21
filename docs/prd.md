@@ -354,7 +354,7 @@ locale: "ko"
 
 ```yaml
 ---
-id: "sample-cert_s1_a3f9c2"        # {exam.code}_{subject}_{hash}, 연도 미포함
+id: "sample-cert_s1_a3f9c2d1"      # {exam.code}_{subject}_{hash8}, 연도 미포함
 stage: "1st"
 subject: "s1"
 taxonomy: ["[[과목 A/단원 2/소단원 2-3]]"]
@@ -364,7 +364,7 @@ source: "original"                  # original | generated | user_upload
 seed_items: []                      # generated 인 경우 시드 ID
 source_ref: "2025년 기출 12번"
 status: "verified"                  # draft | verified | rejected | needs_answer
-attachments: ["Attachments/a3f9c2.png"]
+attachments: ["Attachments/a3f9c2d1.png"]
 answer: 3
 choices: 4
 fsrs: { stability: 4.2, difficulty: 5.1, due: 2026-09-24 }   # 요약, 원본은 .kern/
@@ -381,7 +381,7 @@ stats: { attempts: 3, correct: 2, avg_sec: 71 }
 ### 8.3 시도 로그 (`04_Logs/attempts.jsonl`, append-only)
 
 ```json
-{"ts":"2026-09-21T14:30:00+09:00","item":"sample-cert_s1_a3f9c2","mode":"drill","answer":2,"correct":false,"sec":88,"handler":"mcq","confidence":"deterministic","rating":"Again"}
+{"ts":"2026-09-21T14:30:00+09:00","item":"sample-cert_s1_a3f9c2d1","mode":"drill","answer":2,"correct":false,"sec":88,"handler":"mcq","confidence":"deterministic","rating":"Again"}
 ```
 
 ### 8.4 핸들러 인터페이스 (`scripts/graders/`)
