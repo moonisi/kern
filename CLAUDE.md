@@ -33,7 +33,7 @@ kern 은 시험 학습 도구다. 틀린 사실·조작된 결과는 사용자�
 |---|---|
 | OS | Windows 11. Claude Code 는 **Git Bash** 에서 실행 (Git for Windows 설치 전제) |
 | 런타임 | Node ≥ 22.18, npm. Python 없음. **빌드 없음**: `.ts` 를 Node type stripping 으로 직접 실행 (`docs/decisions/0001-dist-distribution.md`). 제약: enum·runtime namespace·parameter property·decorator 금지, import 는 `.ts` 확장자 필수, 타입은 `import type`. `tsc` 는 타입 검사 전용 |
-| `claude` 실행 파일 | 별도 CLI 설치 없음. 데스크톱 앱 번들 사용: `$APPDATA/Claude/claude-code/<version>/claude.exe` (PATH 에 없음, 앱 업데이트 시 `<version>` 변경). 이 문서의 `claude ...` 명령은 해당 절대경로로 실행 |
+| `claude` 실행 파일 | 별도 CLI 설치 없음. 데스크톱 앱 번들 사용: `$APPDATA/Claude/claude-code/<version>/claude.exe` (PATH 에 없음, 앱 업데이트 시 `<version>` 변경). 이 문서의 `claude ...` 명령은 해당 절대경로로 실행. 이 경로는 MSIX 가상화라 **앱 세션 안에서만** 보임. 사용자 터미널에서는 `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude-code\<version>\claude.exe` 이고 온보딩·로그인이 따로 필요. Git Bash 에서 `-p "/skill"` 은 MSYS 경로 변환으로 깨지므로 PowerShell 사용 |
 | 언어 | TypeScript strict, ESM (`"type": "module"`) |
 | 테스트 | `node:test` 우선. 부족하면 vitest (도입 시 이 표 갱신) |
 | 경로 | 코드·설정·플러그인 컴포넌트 경로는 항상 `/`. 백슬래시 금지 (Windows 에서만 로드되는 컴포넌트가 됨) |

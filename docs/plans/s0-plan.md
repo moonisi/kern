@@ -28,7 +28,7 @@
 | D3 | `claude plugin eval` 불가 시 T7 **보류 + S0 조건부 완료**, S1 진행 | T7, T9 |
 | D4 | task 는 묶지 않고 유지, 계획서 즉시 커밋 | — |
 | D6 | (2026-09-21) `dist` 배포 방식 = **(d) 빌드 없이 실행**(Node type stripping). Node 하한 **≥ 22.18**. `package.json`·`package-lock.json`·`tsconfig.json` 은 **`kern/` 루트**, 소스는 `kern/scripts/src/` | T3·T4·T6·T9, CLAUDE.md §2·§3·§7, roadmap S0, README, prd §6·§9 |
-| D5 | Claude Code CLI 는 **별도 설치하지 않음**. 앱 번들 `claude.exe` 를 절대경로로 호출(PATH 에 없음, 앱 업데이트 시 버전 폴더 변경) | T0, 모든 `claude ...` 검증 명령 |
+| D5 | Claude Code CLI 는 **별도 설치하지 않음**. 앱 번들 `claude.exe` 를 절대경로로 호출(PATH 에 없음, 앱 업데이트 시 버전 폴더 변경). 🔵 (2026-09-21) 앱은 MSIX 패키지라 `$APPDATA/Claude/...` 는 **앱 세션 안에서만** 보이는 가상화 경로. 사용자 터미널에서의 실제 경로는 `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\claude-code\<version>\claude.exe` 이며, 거기서 실행하면 온보딩·로그인이 새로 필요(앱 세션 설정을 공유하지 않음 🟡) | T0, 모든 `claude ...` 검증 명령 |
 
 **`claude` 호출 방법 (이하 모든 task 의 `claude ...` 는 이 방식으로 실행)**
 ```bash
@@ -195,11 +195,11 @@ Git Bash 와 PowerShell 양쪽에서 실행한 실제 출력을 인용해. 다�
 ## T5 — 라우터 `skills/kern/SKILL.md` 스텁
 
 **체크리스트**
-- [ ] 공식 문서에서 SKILL.md frontmatter 필드 확인(URL 기록)
-- [ ] `description` 1~2문장 + 한국어 트리거 문구
-- [ ] 본문: "아직 추천 가능한 커맨드 없음"을 정직하게 안내. 추천 1개 → 확인 → 실행 원칙, §0 런타임 규칙 3종(모르면 모른다 / 근거 노트 없이 문항 금지 / 채점 결과 변경 금지) 삽입
-- [ ] `commands/` 디렉토리 만들지 않음
-- [ ] validate 출력 인용, `--plugin-dir` 로드 후 `/kern` 노출 확인
+- [x] 공식 문서에서 SKILL.md frontmatter 필드 확인(URL 기록) 🔵 https://code.claude.com/docs/en/skills (`name`·`description` 만 사용)
+- [x] `description` 1~2문장 + 한국어 트리거 문구
+- [x] 본문: "아직 추천 가능한 커맨드 없음"을 정직하게 안내. 추천 1개 → 확인 → 실행 원칙, §0 런타임 규칙 3종(모르면 모른다 / 근거 노트 없이 문항 금지 / 채점 결과 변경 금지) 삽입 (`0e8c0fd`). 1차 스텁은 haiku `-p` 실행에서 미래 기능(drill·analysis)을 나열 → 고정 한 문장만 출력하도록 강화 (`15a46fc`)
+- [x] `commands/` 디렉토리 만들지 않음
+- [x] validate 출력 인용, `--plugin-dir` 로드 후 `/kern` 노출 확인 — 🔵 `claude -p --plugin-dir ./kern --model haiku "/kern"`(PowerShell)·`"/kern:kern"`(Git Bash) 모두 고정 문장 출력. 인터랙티브 `/` 메뉴 표시는 🔴 미확인(패키지 밖 터미널에서는 온보딩·로그인이 새로 필요). 주의: Git Bash 에서 `"/kern"` 은 MSYS 경로 변환으로 무효, 콜론 포함 `"/kern:kern"` 은 변환되지 않음. always-on 토큰 0 → ~34
 
 **추천 프롬프트**
 ```text
@@ -317,7 +317,7 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T2 plugin.json (인터랙티브 `--plugin-dir` 로드 확인만 미실행)
 - [x] T3 scripts TS 프로젝트
 - [x] T4 CLI·shim (캐시 복사본 검증은 T9 로 이관)
-- [ ] T5 라우터 스텁
+- [x] T5 라우터 스텁 (인터랙티브 `/` 메뉴 확인만 미실행)
 - [ ] T6 훅 스텁
 - [ ] T7 evals 1건
 - [ ] T8 sample-cert 초안
