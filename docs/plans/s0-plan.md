@@ -258,11 +258,11 @@ S0-T7: evals 에 플러그인 로드 확인 케이스 1개를 추가해줘. 형�
 ## T8 — `examples/sample-cert/` 시험 프로파일 초안
 
 **체크리스트**
-- [ ] `exam.yaml` 초안: PRD §8.1 구조, 1차 stage 만(F7), 과목 2(`s1` mcq 20 / `s2` short_answer 20), `subject_min: 40`, `average_min: 60`
-- [ ] **자작 시험**임을 파일 상단 주석과 `README.md` 에 명시. 실제 시험명·기출 0
-- [ ] `criteria_source` 원문은 S1 산출물 → 아직 없으므로 `verified: false` 로 둘지 질문/기록
-- [ ] YAML 파싱 가능 여부만 확인(zod 스키마는 S1). 파서 의존성은 추가하지 않음 🟡 — 수동 검토로 대체, 한계 명시
-- [ ] 문항 40개 본문은 S0 범위 아님(프로파일 "초안"만) — 명시
+- [x] `exam.yaml` 초안: PRD §8.1 구조, 1차 stage 만(F7), 과목 2(`s1` mcq 20 / `s2` short_answer 20), `subject_min: 40`, `average_min: 60` — 🔵 grep 확인: items 합 40, pass_rule 값 PRD 와 일치
+- [x] **자작 시험**임을 파일 상단 주석과 `README.md` 에 명시. 실제 시험명·기출 0
+- [x] `criteria_source` 원문은 S1 산출물 → 아직 없으므로 `verified: false` 로 기록 (CLAUDE.md §0-5: 출처 없는 출제기준은 `verified: false`). `criteria_source` 경로는 PRD 예시값 그대로 두고 "현재 파일 없음" 주석. 선택 필드 `exam_date` 는 생략
+- [x] YAML 파싱 가능 여부만 확인(zod 스키마는 S1). 파서 의존성은 추가하지 않음 — 🟡 **파서로 검증하지 않음**. 수동 검토(들여쓰기 공백 2칸, 탭 0개 grep 확인)로 대체, 한계를 README 에 명시
+- [x] 문항 40개 본문은 S0 범위 아님(프로파일 "초안"만) — README 에 명시
 
 **추천 프롬프트**
 ```text
@@ -321,7 +321,7 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T5 라우터 스텁 (인터랙티브 `/` 메뉴 확인만 미실행)
 - [x] T6 훅 스텁
 - [x] T7 evals 1건
-- [ ] T8 sample-cert 초안
+- [x] T8 sample-cert 초안
 - [ ] T9 종합 검증
 
 ## 3. 반대 관점·반례
