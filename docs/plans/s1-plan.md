@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0~T7 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0~T8 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -23,7 +23,7 @@
 | F10 | `args.ts` 는 `--version` 만 안다. `validate-exam`·`init-vault` 서브커맨드 분기 필요 | 🔵 파일 읽음 | T5 에서 `ParsedArgs` 유니온 확장. `node:util` `parseArgs` 사용 여부는 Node 공식 문서 확인 후 결정(기억으로 시그니처 쓰지 않음) |
 | F11 | 라우터 스텁이 "이 플러그인에는 라우터만 들어 있다"·"S0" 고정 문장을 출력하고 `evals/plugin-load` 가 그 문장을 regex 로 잠그고 있다. `init-exam` 추가 후에는 **거짓**이 된다 | 🔵 파일 읽음 | T9 에서 스텁을 최소 수정: `exam.yaml` 없으면 "`/kern:init-exam` 을 직접 입력하라" 안내(자동 호출 금지 스킬이라 라우터가 실행할 수 없음 🟡). eval regex 동시 갱신. 본격 라우터는 S5 그대로 |
 | F12 | `attempts.jsonl` append 는 S1 에 소비자가 없다(첫 사용은 S3 solve) | 🔵 | roadmap 산출물이므로 유지하되 최소 구현: zod 스키마(PRD §8.3) + append 함수 + 테스트. 읽기·집계는 만들지 않음 |
-| F13 | always-on 토큰 기준선 ~141. `disable-model-invocation` 스킬·에이전트 추가가 always-on 을 늘리는지 | 🔴 | T8 직후 `claude plugin details kern` 출력 인용, 증가분 보고 |
+| F13 | always-on 토큰 기준선 ~141. `disable-model-invocation` 스킬·에이전트 추가가 always-on 을 늘리는지 | 🔵 T8: ~325(+184, `details` 추정치) | T8 직후 `claude plugin details kern` 출력 인용, 증가분 보고 |
 | F14 | PRD §9 "플랫폼: macOS/Linux 우선", §13 Q2 가 CLAUDE.md(Windows 11 확정)와 어긋남 | 🔵 | S1 범위 밖. 보고만 함(수정 여부는 사용자 결정) |
 
 ## 0.1 착수 전 결정이 필요한 질문
@@ -249,16 +249,17 @@ exam.yaml 을 verified: true 로 갱신해줘. 완전히 가상의 과목·단�
 ## T8 — `agents/exam-profiler.md` + `skills/init-exam/SKILL.md`
 
 **체크리스트**
-- [ ] 공식 문서로 agent frontmatter 필드·`disable-model-invocation` 확인(URL 기록): https://code.claude.com/docs/en/sub-agents , https://code.claude.com/docs/en/skills 🔴 필드는 읽은 뒤 작성
-- [ ] `SKILL.md`: `disable-model-invocation: true`, `description` 1~2문장 + 한국어 트리거("시험 등록 / 새 시험 세팅 / 출제기준 넣기"). 절차 고정:
-  1. `kern init-vault` 실행 → 2. 원문 위치 확인(`00_Exam/criteria/`, 없으면 사용자에게 요청) → 3. `exam-profiler` 에 위임 → 4. `exam.yaml` 작성 → 5. `kern validate-exam` 실행, 실패 시 메시지대로 수정(최대 N회 🟡) → 6. `taxonomy.md` 채움 또는 스켈레톤 유지 → 7. 결과 보고
-- [ ] **원문 없음 경로**: 모든 추출 필드에 근거 없음 → `verified: false` + 고정 확인 요청 메시지. 기억으로 시험 정보를 채우지 않음(§0-5)
-- [ ] **UNSUPPORTED 경로**: 카탈로그(`mcq`·`short_answer`)에 없는 유형 → `handler: UNSUPPORTED` + 경고 고정 문구
-- [ ] **분류 실패 경로**: 스켈레톤을 건드리지 않고 수동 편집 안내(F8)
-- [ ] 런타임 §0 규칙 3종 삽입(모르면 모른다 / 근거 없이 생성 금지 / 채점·`verified` 상태 직접 기록 금지 — 문항 status 에 한함, `exam.verified` 는 Q2 규칙)
-- [ ] 출력 형식(결과 보고 블록) 고정 — T9 evals 가 잠글 문자열
-- [ ] 특정 시험명·예시 하드코딩 없음. 사용자 대면 한국어
-- [ ] validate 출력 + `claude plugin details kern` always-on 토큰(기준선 ~141 대비, F13)
+- [x] 공식 문서로 agent frontmatter 필드·`disable-model-invocation` 확인(URL 기록): https://code.claude.com/docs/en/sub-agents , https://code.claude.com/docs/en/skills — 🔵 2026-09-21 확인. agent: `name`·`description`·`tools`(plugin agent 는 `hooks`·`mcpServers`·`permissionMode` 무시, 참조명 `kern:exam-profiler`). skill: `disable-model-invocation`·`argument-hint`·`$ARGUMENTS`·`${CLAUDE_PLUGIN_ROOT}`
+- [x] `SKILL.md`: `disable-model-invocation: true`, `description` 1~2문장 + 한국어 트리거("시험 등록 / 새 시험 세팅 / 출제기준 넣기"). 절차 고정:
+  1. `kern init-vault` 실행 → 2. 원문 위치 확인(`00_Exam/criteria/`, 없으면 사용자에게 요청) → 3. `exam-profiler` 에 위임 → 4. `exam.yaml` 작성 → 5. `kern validate-exam` 실행, 실패 시 메시지대로 수정(최대 3회) → 6. `taxonomy.md` 채움 또는 스켈레톤 유지 → 7. 결과 보고
+- [x] **원문 없음 경로**: 모든 추출 필드에 근거 없음 → `verified: false` + 고정 확인 요청 메시지. 기억으로 시험 정보를 채우지 않음(§0-5)
+- [x] **UNSUPPORTED 경로**: 카탈로그(`mcq`·`short_answer`)에 없는 유형 → `handler: UNSUPPORTED` + 경고 고정 문구
+- [x] **분류 실패 경로**: 스켈레톤을 건드리지 않고 수동 편집 안내(F8)
+- [x] 런타임 §0 규칙 3종 삽입(모르면 모른다 / 근거 없이 생성 금지 / 채점·`verified` 상태 직접 기록 금지 — 문항 status 에 한함, `exam.verified` 는 Q2 규칙)
+- [x] 출력 형식(결과 보고 블록) 고정 — T9 evals 가 잠글 문자열: `## init-exam 결과` 블록 7줄 + 고정 문구 3종
+- [x] 특정 시험명·예시 하드코딩 없음. 사용자 대면 한국어
+- [x] validate 출력 + `claude plugin details kern` always-on 토큰(기준선 ~141 대비, F13) — 🔵 `validate --strict` 통과, `npm test` pass 83 / fail 0. always-on **~325 tok**(+184): `init-exam` ~110 · `kern` ~130 · `exam-profiler` ~90. `details` 는 `disable-model-invocation` 스킬에도 always-on 을 매긴다(skills 문서의 "description not in context" 와 어긋남 🟡 추정치 한계)
+- [x] 수동 실행 1회 — 🔵 scratchpad vault + 샘플 원문, PowerShell `claude -p "/kern:init-exam" --permission-mode acceptEdits`: 결과 블록 `verified: true`·`validate-exam: 통과`·`taxonomy.md: 채움`. 생성 `exam.yaml` 은 기대값과 `deepStrictEqual` 일치, taxonomy 트리 diff 없음. 🔴 예외 3경로와 서브에이전트 위임 여부는 미실행·미확인(T9 evals)
 
 **추천 프롬프트**
 ```text
@@ -340,7 +341,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 - [x] T5 validate-exam
 - [x] T6 init-vault
 - [x] T7 sample-cert 원문·기대값
-- [ ] T8 init-exam 스킬·에이전트
+- [x] T8 init-exam 스킬·에이전트
 - [ ] T9 evals·라우터 스텁
 - [ ] T10 종합 검증
 
