@@ -216,11 +216,11 @@ CLAUDE.md §6 규칙(한국어 트리거, 확인 후 실행, 런타임 §0 규�
 ## T6 — `hooks/hooks.json` SessionStart 스텁(침묵)
 
 **체크리스트**
-- [ ] 공식 hooks 문서에서 플러그인 `hooks.json` 스키마·`${CLAUDE_PLUGIN_ROOT}` 확인(URL 기록)
-- [ ] `scripts/src/brief.ts`: S0 에서는 아무것도 출력하지 않고 exit 0. "vault 판정은 S5" 주석
-- [ ] 훅 커맨드: `node "${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"` 형태. `.sh` 금지
-- [ ] 단위 테스트: brief 실행 시 stdout 빈 문자열
-- [ ] validate 출력 + 실제 세션 시작 시 출력·오류 없음 확인
+- [x] 공식 hooks 문서에서 플러그인 `hooks.json` 스키마·`${CLAUDE_PLUGIN_ROOT}` 확인(URL 기록) 🔵 https://code.claude.com/docs/en/hooks , https://code.claude.com/docs/en/plugins-reference (`hooks/hooks.json` 자동 발견, 선택적 top-level `description`, SessionStart stdout 은 컨텍스트에 추가됨)
+- [x] `scripts/src/brief.ts`: S0 에서는 아무것도 출력하지 않고 exit 0. "vault 판정은 S5" 주석
+- [x] 훅 커맨드: ~~`node "${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"` 형태~~ → **exec form** (`"command": "node"`, `"args": ["${CLAUDE_PLUGIN_ROOT}/scripts/src/brief.ts"]`). 문서가 경로 따옴표 문제 회피용으로 권장(셸 미경유). `.sh` 없음
+- [x] 단위 테스트: brief 실행 시 stdout·stderr 빈 문자열, exit 0 (`scripts/test/brief.test.ts`, `npm test` pass 7 / fail 0)
+- [x] validate 출력 + 실제 세션 시작 시 출력·오류 없음 확인 — 🔵 `claude -p --plugin-dir ./kern --debug-file` 로그에 `Registered 1 hooks from 1 plugins`, 훅 오류 없음. 공백 포함 경로(`sp ace/kern`) 복사본에 마커 출력을 넣어 실행 → 로그 `Hook SessionStart:startup (SessionStart) success: BRIEF_MARKER_7391` 로 실제 실행·경로 처리 확인. `plugin details`: 훅은 `harness-only — no model context cost`. 인터랙티브 세션은 🔴 미실행
 
 **추천 프롬프트**
 ```text
@@ -318,7 +318,7 @@ S0-T9: s0-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용�
 - [x] T3 scripts TS 프로젝트
 - [x] T4 CLI·shim (캐시 복사본 검증은 T9 로 이관)
 - [x] T5 라우터 스텁 (인터랙티브 `/` 메뉴 확인만 미실행)
-- [ ] T6 훅 스텁
+- [x] T6 훅 스텁
 - [ ] T7 evals 1건
 - [ ] T8 sample-cert 초안
 - [ ] T9 종합 검증
