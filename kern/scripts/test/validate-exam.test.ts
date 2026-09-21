@@ -100,6 +100,15 @@ test("validateExam: verified: true 인데 criteria_source 파일이 없으면 �
   });
 });
 
+test("validateExam: verified: true 인데 criteria_source 가 디렉토리면 실패한다", () => {
+  withTempDir((dir) => {
+    mkdirSync(join(dir, "criteria", "2026_criteria.md"), { recursive: true });
+    const result = validateExam(writeExam(dir, examYaml({ verified: true })));
+    assert.equal(result.ok, false);
+    assert.match(result.ok ? "" : result.message, /criteria\/2026_criteria\.md/);
+  });
+});
+
 test("validateExam: verified: true 이고 criteria_source 파일이 있으면 통과한다", () => {
   withTempDir((dir) => {
     mkdirSync(join(dir, "criteria"));
