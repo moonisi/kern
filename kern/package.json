@@ -9,7 +9,8 @@
   },
   "scripts": {
     "typecheck": "tsc",
-    "test": "node --test \"scripts/test/**/*.test.ts\""
+    "test": "node --test \"scripts/test/**/*.test.ts\"",
+    "eval:manual": "node scripts/src/dev/manual-eval.ts"
   },
   "devDependencies": {
     "@types/node": "22.20.4",
