@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0·T1 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0~T2 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -119,11 +119,11 @@ handler 는 mcq·short_answer·UNSUPPORTED 만 허용. zod API 는 공식 문서
 ## T2 — `scripts/src/vault/` 경로 규약 + YAML·frontmatter IO
 
 **체크리스트**
-- [ ] `vault/paths.ts`: PRD §6.2 표준 디렉토리 상수 + `vaultPaths(root)` 순수 함수. 경로 결합은 `node:path` 의 posix 가 아닌 기본 API 를 쓰되 **저장·출력 문자열은 `/`** 로 정규화
-- [ ] `vault/frontmatter.ts`: `parseFrontmatter(text) → {data, body}`, `stringifyFrontmatter(data, body)` 순수 함수. frontmatter 없음·닫는 `---` 없음은 예외(조용한 폴백 금지). CRLF 입력 처리
-- [ ] `vault/io.ts`: `readYaml(path)`, `writeText(path, text)`(상위 디렉토리 생성, LF 고정), `readExam(vaultRoot)` = 읽기 + `parseExam` (읽기 경계 검증, CLAUDE.md §5)
-- [ ] round-trip 테스트: parse → stringify → parse 동일. 한글·`[[백링크]]`·콜론 포함 값
-- [ ] IO 테스트는 `os.tmpdir()` 하위 임시 디렉토리 사용, 테스트 후 정리
+- [x] `vault/paths.ts`: PRD §6.2 표준 디렉토리 상수 + `vaultPaths(root)` 순수 함수. 경로 결합은 `node:path` 의 posix 가 아닌 기본 API 를 쓰되 **저장·출력 문자열은 `/`** 로 정규화
+- [x] `vault/frontmatter.ts`: `parseFrontmatter(text) → {data, body}`, `stringifyFrontmatter(data, body)` 순수 함수. frontmatter 없음·닫는 `---` 없음은 예외(조용한 폴백 금지). CRLF 입력 처리
+- [x] `vault/io.ts`: `readYaml(path)`, `writeText(path, text)`(상위 디렉토리 생성, LF 고정), `readExam(vaultRoot)` = 읽기 + `parseExam` (읽기 경계 검증, CLAUDE.md §5)
+- [x] round-trip 테스트: parse → stringify → parse 동일. 한글·`[[백링크]]`·콜론 포함 값 — 🔵 `stringify` 는 `lineWidth: 0`(긴 값 줄 접기 해제). BOM 은 미처리(첫 줄 `---` 아님 예외로 드러남)
+- [x] IO 테스트는 `os.tmpdir()` 하위 임시 디렉토리 사용, 테스트 후 정리 — 🔵 신규 20건, `npm test` pass 40 / fail 0, `validate --strict` 통과, `writeFile` grep 은 `vault/io.ts` 뿐
 
 **추천 프롬프트**
 ```text
@@ -334,7 +334,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 
 - [x] T0 의존성 승인·설치
 - [x] T1 exam 스키마
-- [ ] T2 vault 경로·IO
+- [x] T2 vault 경로·IO
 - [ ] T3 attempts append
 - [ ] T4 문항 ID
 - [ ] T5 validate-exam
