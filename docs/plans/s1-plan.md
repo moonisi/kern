@@ -5,7 +5,7 @@
 | 작성일 | 2026-09-21 (KST) |
 | 기준 | `docs/roadmap.md` §2 S1, `docs/prd.md` §6.2·§7.1·§8, `CLAUDE.md` §4~§7 |
 | 범례 | 🔵 확인됨 / 🟡 추정 / 🔴 미확인 |
-| 상태 | Q1~Q5 확정(§0.2). T0 완료 |
+| 상태 | Q1~Q5 확정(§0.2). T0·T1 완료 |
 
 ## 0. 검토 결과 (착수 전 알아야 할 것)
 
@@ -95,13 +95,13 @@ S1-T0: docs/plans/s1-plan.md 의 T0 을 수행해줘. zod 와 yaml 의 npm view 
 ## T1 — `scripts/src/schema/exam.ts` (zod 스키마)
 
 **체크리스트**
-- [ ] zod 공식 문서로 사용 API 확인(설치된 major 기준, URL 기록) — 기억으로 시그니처 쓰지 않음
-- [ ] 필드는 `examples/sample-cert/exam.yaml` 에 있는 것만(F7): `schema_version`(리터럴 1), `exam`(name·code·criteria_version·criteria_source·verified·exam_date?), `stages[].{id,name,time_minutes,pass_rule,subjects[],difficulty_mix}`, `youtube.direct_fetch`, `locale`
-- [ ] `handler`: `mcq`|`short_answer`|`UNSUPPORTED`. `mcq` 는 `choices` 필수 🟡(Q: 아니면 선택) — PRD 예시 기준으로 필수
-- [ ] 알 수 없는 키는 거부(strict) — 오타가 조용히 통과하지 않게
-- [ ] 의미 검증: `difficulty_mix` 합 = 1(부동소수 허용오차), `subjects[].id` 중복 없음, `items` 양의 정수
-- [ ] `parseExam(raw: unknown): Exam` — 실패 시 한국어 메시지 + 필드 경로를 담은 예외. `unsupportedSubjects(exam)` 순수 함수(경고용)
-- [ ] 단위 테스트: 정상 / 필드 누락 / `handler: UNSUPPORTED`(통과+경고 목록) / 미지 handler / 미지 키 / mix 합 ≠ 1 / id 중복
+- [x] zod 공식 문서로 사용 API 확인(설치된 major 기준, URL 기록) — 기억으로 시그니처 쓰지 않음 🔵 https://zod.dev/api , https://zod.dev/basics + `node_modules/zod/v4/core/schemas.d.ts`(per-parse `error`)
+- [x] 필드는 `examples/sample-cert/exam.yaml` 에 있는 것만(F7): `schema_version`(리터럴 1), `exam`(name·code·criteria_version·criteria_source·verified·exam_date?), `stages[].{id,name,time_minutes,pass_rule,subjects[],difficulty_mix}`, `youtube.direct_fetch`, `locale`
+- [x] `handler`: `mcq`|`short_answer`|`UNSUPPORTED`. `mcq` 는 `choices` 필수 — PRD 예시 기준으로 필수로 구현(`choices` 경로에 오류)
+- [x] 알 수 없는 키는 거부(strict) — 오타가 조용히 통과하지 않게
+- [x] 의미 검증: `difficulty_mix` 합 = 1(부동소수 허용오차), `subjects[].id` 중복 없음, `items` 양의 정수
+- [x] `parseExam(raw: unknown): Exam` — 실패 시 한국어 메시지 + 필드 경로를 담은 예외(zod 내장 `ko` locale 을 per-parse 로 적용, 전역 config 미사용). `unsupportedSubjects(exam)` 순수 함수(경고용)
+- [x] 단위 테스트: 정상 / 필드 누락 / `handler: UNSUPPORTED`(통과+경고 목록) / 미지 handler / 미지 키 / mix 합 ≠ 1 / id 중복 — 🔵 13건, `npm test` pass 20 / fail 0. 실제 `examples/sample-cert/exam.yaml` 도 통과 확인
 
 **추천 프롬프트**
 ```text
@@ -333,7 +333,7 @@ S1-T10: s1-plan.md 의 DoD 명령을 전부 실제로 실행해 출력을 인용
 ## 2. 전체 진행 체크
 
 - [x] T0 의존성 승인·설치
-- [ ] T1 exam 스키마
+- [x] T1 exam 스키마
 - [ ] T2 vault 경로·IO
 - [ ] T3 attempts append
 - [ ] T4 문항 ID
