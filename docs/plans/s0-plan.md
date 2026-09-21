@@ -101,9 +101,9 @@ S0-T1: docs/plans/s0-plan.md 의 T1 을 수행해줘. README 는 prd.md §1 과 
 **목표**: git 으로 설치된 플러그인에서 `scripts/dist/*.js` 가 존재하도록 하는 방식을 문서 근거로 결정.
 
 **체크리스트**
-- [ ] 공식 플러그인 문서에서 설치 시 동작 확인: 의존성 설치·빌드 단계 유무, lockfile 요구(roadmap S0 의 "플러그인 캐시 설치가 npm lockfile 을 요구" 🟡 주장 검증), URL 기록
-- [ ] 후보 비교: (a) 설치 시 빌드 (b) `dist` 커밋 — CLAUDE.md §3 커밋 금지 목록 수정 필요 (c) 릴리스 브랜치/태그에만 `dist` 포함 (d) 빌드 없이 실행 가능한 형태
-- [ ] 추천안 1개 + 근거를 `docs/decisions/0001-dist-distribution.md` 에 기록, 문서로 확인 안 된 부분은 🔴 유지
+- [x] 공식 플러그인 문서에서 설치 시 동작 확인: 의존성 설치·빌드 단계 유무, lockfile 요구(roadmap S0 의 "플러그인 캐시 설치가 npm lockfile 을 요구" 🟡 주장 검증), URL 기록 → 🔵 lockfile 요구 맞음(단 플러그인 **루트** 기준), 빌드 단계 없음(`npm ci --ignore-scripts`)
+- [x] 후보 비교: (a) 설치 시 빌드 (b) `dist` 커밋 — CLAUDE.md §3 커밋 금지 목록 수정 필요 (c) 릴리스 브랜치/태그에만 `dist` 포함 (d) 빌드 없이 실행 가능한 형태
+- [x] 추천안 1개 + 근거를 `docs/decisions/0001-dist-distribution.md` 에 기록, 문서로 확인 안 된 부분은 🔴 유지 → 추천 (d), `package.json` 위치 문제 별도 제기
 - [ ] 사용자 승인 후 확정. CLAUDE.md·`.gitignore` 수정이 필요하면 별도 커밋
 
 **추천 프롬프트**
