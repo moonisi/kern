@@ -14,7 +14,7 @@
 1. **세로 슬라이스**: 각 단계는 끝나면 사용자가 실제로 쓸 수 있는 흐름 하나를 완성한다. "데이터 계층만 다 만들고 UI는 나중에" 식 가로 슬라이스 금지.
 2. **샘플 시험으로 검증**: 모든 단계의 완료 기준(DoD)은 `examples/sample-cert/` 로 재현 가능해야 한다. 실제 시험 데이터는 DoD에 쓰지 않는다.
 3. **결정적 로직 먼저 테스트**: `scripts/` 의 함수는 단위 테스트 없이 다음 단계로 넘어가지 않는다.
-4. **단계 안에서만 리팩토링**: 다음 단계 착수 전 `claude plugin validate` + 단위 테스트 + `evals/` 통과.
+4. **단계 안에서만 리팩토링**: 다음 단계 착수 전 `claude plugin validate` + 단위 테스트 + `evals/` 통과. native Windows 에서는 Bash 를 쓰는 evals 가 하네스로 돌지 않으므로(CLAUDE.md §8) `evals/` 통과 = `claude plugin eval ./kern --tag smoke` 통과 + `needs-bash` 케이스 전부 `npm run eval:manual -- evals/<case>` 통과로 본다(2026-09-21 결정). 하네스 실행이 가능한 환경(WSL2/Linux/CI)이 생기면 이 예외를 없앤다.
 
 ---
 
@@ -265,6 +265,7 @@ gantt
 | 09-21 | `drill` 을 MVP(S5) 로 이동 | MVP 차별점 확보 |
 | 09-21 | 매 task 완료 후 커밋 | 사용자 관례 |
 | 09-21 | 환각·거짓 보고 방지를 CLAUDE.md 최우선 규칙으로 | 시험 학습용 |
+| 09-21 | 원칙 4 의 "evals 통과" = Windows 에서는 `--tag smoke` + `eval:manual` | native Windows 는 Bash grant eval run 거부·`--scaffold` 실패(S1-T9 실측) |
 
 ---
 
