@@ -10,7 +10,7 @@
 
 | # | 발견 | 상태 | 조치 |
 |---|---|---|---|
-| F1 | `node`, `npm`, `claude` 가 Git Bash·PowerShell 양쪽 PATH 에 없음. `C:\Program Files\nodejs`, nvm, fnm, Volta 경로도 없음 | 🔵 2026-09-21 실행 확인 (`command not found` / `없음`) | **T0 선행 필수.** Node 만 사용자가 설치. `claude` 는 앱 번들 `$APPDATA/Claude/claude-code/2.1.275/claude.exe` 사용(🔵 `--version`·`plugin --help` 실행 확인, D5) |
+| F1 | `node`, `npm`, `claude` 가 Git Bash·PowerShell 양쪽 PATH 에 없음. `C:\Program Files\nodejs`, nvm, fnm, Volta 경로도 없음 | 🔵 2026-09-21 실행 확인 (`command not found` / `없음`) → **해소**: 🔵 2026-09-21 재확인, 양쪽 셸에서 `node` v24.19.0 / `npm` 11.17.0 출력 (앱 세션 도구 셸 기준). `claude` 는 여전히 PATH 에 없음(D5) | ~~T0 선행 필수. Node 만 사용자가 설치.~~ T0 완료. `claude` 는 앱 번들 `$APPDATA/Claude/claude-code/2.1.275/claude.exe` 사용(🔵 `--version`·`plugin --help` 실행 확인, D5) |
 | F2 | `.gitignore`, `.gitattributes`, `CLAUDE.md` 는 이미 존재하고 S0 요구를 충족 | 🔵 파일 읽음 | 해당 산출물은 T1 에서 제외 |
 | F3 | `dist/` 가 gitignore 인데 `bin/kern`·훅이 `scripts/dist/*.js` 를 호출 → git 으로 설치한 플러그인에는 `dist` 가 없음 | 🔵 구조상 사실 / 해결책 🔴 | S0 은 `--plugin-dir` 로컬 빌드 전제로 진행. 배포 방식은 T9 에서 `docs/decisions/` 에 미결로 기록 |
 | F4 | `plugin.json` 필드, `hooks.json` 스키마, `evals/` 케이스 상세 형식 (`claude plugin eval` 자체는 🔵 사용 가능, help 상 `case.yaml` 또는 `prompt.md + graders/*.md`) | 🔴 기억으로 작성 금지 (CLAUDE.md §0-4) | 각 task 첫 단계에서 공식 문서·`--help` 확인 후 출처를 커밋 본문에 기록 |
@@ -58,10 +58,10 @@ T2 이전에는 validate 대상이 없으므로 T1 은 validate 를 "해당 없�
 **목표**: Git Bash·PowerShell 양쪽에서 `node`(≥20), `npm` 실행 가능 + 앱 번들 `claude.exe` 호출 확인.
 
 **체크리스트**
-- [ ] Node LTS 를 winget 으로 설치 (사용자). 설치 후 **앱 재시작**(새 PATH 반영)
-- [ ] Git Bash 에서 `node --version; npm --version` 출력 기록
-- [ ] PowerShell 에서 동일 명령 출력 기록
-- [ ] 위 "`claude` 호출 방법" 스니펫으로 번들 `claude.exe --version` 출력 기록
+- [x] Node LTS 를 winget 으로 설치 (사용자). 설치 후 **앱 재시작**(새 PATH 반영) — 설치 결과는 🔵(아래 출력), 설치 경로가 winget 인지는 🟡 미검증
+- [x] Git Bash 에서 `node --version; npm --version` 출력 기록 → `v24.19.0` / `11.17.0` (2026-09-21)
+- [x] PowerShell 에서 동일 명령 출력 기록 → `v24.19.0` / `11.17.0` (2026-09-21)
+- [x] 위 "`claude` 호출 방법" 스니펫으로 번들 `claude.exe --version` 출력 기록 → `2.1.275 (Claude Code)` (2026-09-21, Git Bash)
 - [x] `claude plugin --help` 에 `validate`, `details`, `eval` 존재 확인 → CLAUDE.md §8 갱신 (2026-09-21 완료, 2.1.275)
 
 **추천 프롬프트**
