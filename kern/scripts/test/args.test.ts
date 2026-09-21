@@ -30,6 +30,16 @@ test("parseArgs: validate-exam <path> 는 주어진 경로를 담는다", () => 
   assert.deepEqual(parseArgs(["validate-exam", "a/exam.yaml"]), { kind: "validate-exam", path: "a/exam.yaml" });
 });
 
+test("parseArgs: init-vault 는 dir 생략 시 cwd, 주어지면 그 경로를 담는다", () => {
+  assert.deepEqual(parseArgs(["init-vault"]), { kind: "init-vault", dir: "." });
+  assert.deepEqual(parseArgs(["init-vault", "my-vault"]), { kind: "init-vault", dir: "my-vault" });
+});
+
+test("parseArgs: init-vault 에 인자가 2개 이상이거나 옵션 형태면 error 를 반환한다", () => {
+  assert.equal(parseArgs(["init-vault", "a", "b"]).kind, "error");
+  assert.equal(parseArgs(["init-vault", "--force"]).kind, "error");
+});
+
 test("parseArgs: validate-exam 에 인자가 2개 이상이거나 옵션 형태면 error 를 반환한다", () => {
   assert.equal(parseArgs(["validate-exam", "a.yaml", "b.yaml"]).kind, "error");
   assert.equal(parseArgs(["validate-exam", "--nope"]).kind, "error");
